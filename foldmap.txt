@@ -1,0 +1,53 @@
+Seq(1, 2, 3, 4).par.fold(10)(_ - _)
+               ~~~~
+// a. ((((10 - 1) - 2) - 3) - 4) => 0
+// b. (10 - 1) - (2 - (3 - 4))   => 6
+
+Seq(1, 2, 3, 4).par.fold(0)(_ + _)
+
+// => 10
+
+abstract class Semigroup[A] {
+  def append(x: A, y: A): A
+}
+
+abstract class Monoid[A] {
+  def empty: A
+}
+
+case class Sum(get: BigInt)
+
+implicit def sumMonoid = new Monoid[Sum] {
+  def empty = 0
+  def append(x: Sum, y: Sum) = Sum(x.get + y.get)
+}
+
+def parFoldMap[M, A](xs: Seq[A])(f: A => M)(implicit M: Monoid[A]): M =
+  xs.par.map(f).fold(M.empty)(M.append)
+    ~~~~
+
+parFoldMap(Seq(1, 2, 3, 4))(Sum(_)).get
+// => 0
+
+
+def sort[A: TotalOrder](xs: List[A]): { res: List[A] => res.isSorted } = {
+  // ...
+}
+
+trait Entry {
+  type Key
+  val key: Key
+}
+
+def extractKey(e: Entry): e.Key = e.key
+
+def extractor: (e: Entry) => e.Key = extractKey(_)
+
+case class IntEntry() extends Entry {
+  type Key = Int
+  val key: Int = 42
+}
+
+def test1(entry: IntEntry) = {
+  assert(extractor(entry) == 42)
+}

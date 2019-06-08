@@ -1,0 +1,581 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  ignorenonframetext,
+]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Formal verification of Scala programs with Stainless},
+  pdfauthor={Romain Ruetschi, EPFL LARA},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage[]{biblatex}
+
+\title{Formal verification of Scala programs with Stainless}
+\author{Romain Ruetschi, EPFL LARA}
+\date{June 14th, 2019}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Who am I?}
+\protect\hypertarget{who-am-i}{}
+
+\end{frame}
+
+\begin{frame}{What is Stainless?}
+\protect\hypertarget{what-is-stainless}{}
+
+Stainless is a verification framework for higher-order programs written
+in a (now fairly substantive) subset of Scala.
+
+We currently support the following features:
+
+\begin{itemize}
+\tightlist
+\item
+  TODO
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{What Stainless verifies}
+\protect\hypertarget{what-stainless-verifies}{}
+
+Stainless supports verifying:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Assertions} which should hold at the place where they are
+  stated, but are checked statically
+\item
+  \textbf{Postconditions} using \texttt{ensuring} function: assertions
+  for return values of functions
+\item
+  \textbf{Preconditions} using \texttt{require} function: assertions on
+  function parameters
+\item
+  \textbf{Loop invariants}: inductive assertions that hold in each loop
+  iteration after the while condition check passes
+\item
+  \textbf{ADT/Class invariants}: assertions on immutable parameters of
+  constructors (which remain true for all constructed values)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+Stainless also automatically performs \textbf{automatic checks for the
+absence of runtime failures}:
+
+\begin{itemize}
+\tightlist
+\item
+  completeness of pattern matching
+\item
+  division by zero, array bounds checks
+\item
+  map domain checks
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+Moreover, Stainless prevents \emph{PureScala} programs from:
+
+\begin{itemize}
+\tightlist
+\item
+  creating null values or unininitalized local variables or fields
+\item
+  explicitly throwing an exception
+\item
+  overflows and underflows on sized integer types
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Verifying typeclasses}
+\protect\hypertarget{verifying-typeclasses}{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Seq(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{).}\FunctionTok{par}\NormalTok{.}\FunctionTok{fold}\NormalTok{(}\DecValTok{10}\NormalTok{)(_ - _)}
+
+\CommentTok{// ((((10 - 1) - 2) - 3) - 4) => 0}
+\CommentTok{// (10 - 1) - (2 - (3 - 4))   => 6}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Seq(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{).}\FunctionTok{par}\NormalTok{.}\FunctionTok{fold}\NormalTok{(}\DecValTok{0}\NormalTok{)(_ + _)}
+
+\CommentTok{// ((((10 + 1) + 2) + 3) + 4) => 10}
+\CommentTok{// (10 + 1) + (2 + (3 + 4))   => 10}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{abstract} \KeywordTok{class}\NormalTok{ Semigroup[A] \{}
+  \KeywordTok{def} \FunctionTok{combine}\NormalTok{(x: A, y: A): A}
+  
+\NormalTok{  @law }\KeywordTok{def} \FunctionTok{law_assoc}\NormalTok{(x: A, y: A, z: A) =}
+    \FunctionTok{combine}\NormalTok{(x, }\FunctionTok{combine}\NormalTok{(y, z)) == }\FunctionTok{combine}\NormalTok{(}\FunctionTok{combine}\NormalTok{(x, y), z)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{abstract} \KeywordTok{class}\NormalTok{ Monoid[A]}
+  \KeywordTok{extends}\NormalTok{ Semigroup[A] \{}
+
+  \KeywordTok{def}\NormalTok{ empty: A}
+
+\NormalTok{  @law }\KeywordTok{def} \FunctionTok{law_identity}\NormalTok{(x: A) =}
+    \FunctionTok{combine}\NormalTok{(empty, x) == x}
+
+\NormalTok{  @law }\KeywordTok{def} \FunctionTok{law_rightIdentity}\NormalTok{(x: A) =}
+    \FunctionTok{combine}\NormalTok{(x, empty) == x}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{case} \KeywordTok{class} \FunctionTok{Sum}\NormalTok{(get: BigInt)}
+
+\KeywordTok{implicit} \KeywordTok{def}\NormalTok{ sumMonoid = }\KeywordTok{new}\NormalTok{ Monoid[Sum] \{}
+  \KeywordTok{def}\NormalTok{ empty = }\DecValTok{0}
+  \KeywordTok{def} \FunctionTok{combine}\NormalTok{(x: Sum, y: Sum) = }\FunctionTok{Sum}\NormalTok{(x.}\FunctionTok{get}\NormalTok{ + y.}\FunctionTok{get}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{implicit} \KeywordTok{def}\NormalTok{ optionMonoid[A](}\KeywordTok{implicit} \KeywordTok{val}\NormalTok{ S: Semigroup[A]) =}
+  \KeywordTok{new}\NormalTok{ Monoid[Option[A]] \{}
+    \KeywordTok{def}\NormalTok{ empty: Option[A] = None()}
+
+    \KeywordTok{def} \FunctionTok{combine}\NormalTok{(x: Option[A], y: Option[A]) =}
+\NormalTok{      x }\KeywordTok{match}\NormalTok{ \{}
+        \KeywordTok{case}\NormalTok{ None() => y}
+        \KeywordTok{case}\NormalTok{ Some(xv) => y }\KeywordTok{match}\NormalTok{ \{}
+          \KeywordTok{case}\NormalTok{ None() => x}
+          \KeywordTok{case}\NormalTok{ Some(yv) => Some(S.}\FunctionTok{combine}\NormalTok{(xv, yv))}
+\NormalTok{        \}}
+\NormalTok{      \}}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \FunctionTok{lemma_optionCombineAssoc}\NormalTok{(x: Option[A], y: Option[A], z: Option[A]) = \{}
+  \CommentTok{// TODO}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{implicit} \KeywordTok{def}\NormalTok{ optionMonoid[A](}\KeywordTok{implicit} \KeywordTok{val}\NormalTok{ S: Semigroup[A]) =}
+  \KeywordTok{new}\NormalTok{ Monoid[Option[A]] \{}
+    \CommentTok{// ...}
+    
+    \KeywordTok{override} \KeywordTok{def} \FunctionTok{law_assoc}\NormalTok{(x: Option[A], y: Option[A], z: Option[A]) =}
+      \KeywordTok{super}\NormalTok{.}\FunctionTok{law_assoc}\NormalTok{(x, y, z) because }\FunctionTok{lemma_optionCombineAssoc}\NormalTok{(x, y, z)}
+\NormalTok{  \}  }
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{implicit} \KeywordTok{def}\NormalTok{ optionMonoid[A](}\KeywordTok{implicit} \KeywordTok{val}\NormalTok{ S: Semigroup[A]) =}
+  \KeywordTok{new}\NormalTok{ Monoid[Option[A]] \{}
+    \CommentTok{// ...}
+    
+    \KeywordTok{override} \KeywordTok{def} \FunctionTok{law_assoc}\NormalTok{(@induct x: Option[A], y: Option[A], z: Option[A]) =}
+      \KeywordTok{super}\NormalTok{.}\FunctionTok{law_assoc}\NormalTok{(x, y, z)}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ foldMap[M, A](xs: List[A])(f: A => M)(}\KeywordTok{implicit}\NormalTok{ M: Monoid[A]): M =}
+\NormalTok{  xs.}\FunctionTok{map}\NormalTok{(f).}\FunctionTok{fold}\NormalTok{(M.}\FunctionTok{empty}\NormalTok{)(M.}\FunctionTok{append}\NormalTok{)}
+  
+\NormalTok{@extern}
+\KeywordTok{def}\NormalTok{ parFoldMap[M, A](xs: List[A])(f: A => M)(}\KeywordTok{implicit}\NormalTok{ M: Monoid[A]): M = \{}
+\NormalTok{  xs.}\FunctionTok{toScala}\NormalTok{.}\FunctionTok{par}\NormalTok{.}\FunctionTok{map}\NormalTok{(f).}\FunctionTok{fold}\NormalTok{(M.}\FunctionTok{empty}\NormalTok{)(M.}\FunctionTok{append}\NormalTok{)}
+\NormalTok{\} ensuring \{ res =>}
+\NormalTok{  res == }\FunctionTok{foldMap}\NormalTok{(xs, f)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}{Termination checking}
+\protect\hypertarget{termination-checking}{}
+
+A \emph{verified} function in stainless is guaranteed to never crash,
+however, it can still lead to an infinite evaluation. Stainless
+therefore provides a termination checker that complements the
+verification of safety properties.
+
+\end{frame}
+
+\begin{frame}{Under the hood}
+\protect\hypertarget{under-the-hood}{}
+
+\end{frame}
+
+\begin{frame}[fragile]{Case studies}
+\protect\hypertarget{case-studies}{}
+
+\begin{block}{ConcRope}
+
+\end{block}
+
+\begin{block}{Parellel Map-Reduce pipeline}
+
+\end{block}
+
+\begin{block}{Actor systems}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{case} \KeywordTok{class} \FunctionTok{Primary}\NormalTok{(backup: ActorRef, counter: Counter) }\KeywordTok{extends}\NormalTok{ Behavior \{}
+    \FunctionTok{require}\NormalTok{(backup.}\FunctionTok{name}\NormalTok{ == }\StringTok{"backup"}\NormalTok{)}
+
+    \KeywordTok{def} \FunctionTok{processMsg}\NormalTok{(msg: Msg)(}\KeywordTok{implicit}\NormalTok{ ctx: ActorContext): Behavior = msg }\KeywordTok{match}\NormalTok{ \{}
+      \KeywordTok{case}\NormalTok{ Inc =>}
+\NormalTok{        backup ! Inc}
+        \FunctionTok{PrimBehav}\NormalTok{(backup, counter.}\FunctionTok{increment}\NormalTok{)}
+
+      \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{this}
+\NormalTok{    \}}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{case} \KeywordTok{class} \FunctionTok{Backup}\NormalTok{(counter: Counter) }\KeywordTok{extends}\NormalTok{ Behavior \{}
+    \KeywordTok{def} \FunctionTok{processMsg}\NormalTok{(msg: Msg)(}\KeywordTok{implicit}\NormalTok{ ctx: ActorContext): Behavior = msg }\KeywordTok{match}\NormalTok{ \{}
+      \KeywordTok{case}\NormalTok{ Inc => }\FunctionTok{BackBehav}\NormalTok{(counter.}\FunctionTok{increment}\NormalTok{)}
+      \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{this}
+\NormalTok{    \}}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{def} \FunctionTok{invariant}\NormalTok{(s: ActorSystem): Boolean = \{}
+\NormalTok{    (s.}\FunctionTok{behaviors}\NormalTok{(PrimaryRef), s.}\FunctionTok{behaviors}\NormalTok{(BackupRef)) }\KeywordTok{match}\NormalTok{ \{}
+      \KeywordTok{case}\NormalTok{ (}\FunctionTok{Primary}\NormalTok{(bRef, p), }\FunctionTok{Backup}\NormalTok{(b)) }\KeywordTok{if}\NormalTok{ bRef == BackupRef =>}
+\NormalTok{        p.}\FunctionTok{value}\NormalTok{ == b.}\FunctionTok{value}\NormalTok{ + s.}\FunctionTok{inboxes}\NormalTok{(PrimaryRef -> BackupRef).}\FunctionTok{length}
+      \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{false}
+\NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{block}
+
+\begin{block}{Smart contracts verification}
+
+We also maintain a fork of Stainless, called \emph{Smart} which
+supports:
+
+\begin{itemize}
+\tightlist
+\item
+  Writing smart contracts in Scala
+\item
+  Specifiybg and proving properties of such programs, including precise
+  reasoning about the \texttt{Uint256} data type
+\item
+  Generating Solidity source code from Scala, which can then be compiled
+  and deployed using the usual tools for the Ethereum software ecosystem
+\end{itemize}
+
+For example, we have modeled and verified a voting smart contract
+developed by SwissBorg.
+
+{[}0{]} https://github.com/epfl-lara/smart
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{Bonus: Refinement and dependent function types}
+\protect\hypertarget{bonus-refinement-and-dependent-function-types}{}
+
+\begin{block}{Refinement types}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \FunctionTok{sortedInsert}\NormalTok{(}
+\NormalTok{  xs: \{ List[Int] => xs.}\FunctionTok{nonEmpty}\NormalTok{ \},}
+\NormalTok{  x:  \{ Int => x <= xs.}\FunctionTok{head}\NormalTok{ \}}
+\NormalTok{): \{ res: List[Int] => }\FunctionTok{isSorted}\NormalTok{(res) \} = \{}
+\NormalTok{  x :: xs }\CommentTok{// VALID}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{block}
+
+\begin{block}{Dependent function types}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{trait}\NormalTok{ Entry \{}
+  \KeywordTok{type}\NormalTok{ Key}
+  \KeywordTok{val}\NormalTok{ key: Key}
+\NormalTok{\}}
+
+\KeywordTok{def} \FunctionTok{extractKey}\NormalTok{(e: Entry): e.}\FunctionTok{Key}\NormalTok{ = e.}\FunctionTok{key}
+
+\KeywordTok{def}\NormalTok{ extractor: (e: Entry) => e.}\FunctionTok{Key}\NormalTok{ = }\FunctionTok{extractKey}\NormalTok{(_)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{case} \KeywordTok{class} \FunctionTok{IntEntry}\NormalTok{() }\KeywordTok{extends}\NormalTok{ Entry \{}
+  \KeywordTok{type}\NormalTok{ Key = Int}
+  \KeywordTok{val}\NormalTok{ key: Int = }\DecValTok{42}
+\NormalTok{\}}
+
+\FunctionTok{assert}\NormalTok{(}\FunctionTok{extractor}\NormalTok{(entry) == }\DecValTok{42}\NormalTok{) }\CommentTok{// VALID}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}{Coming up}
+\protect\hypertarget{coming-up}{}
+
+\begin{itemize}
+\tightlist
+\item
+  VC generator via bidirectional typechecker for System FR (TODO: ref)
+\item
+  Higher-kinded types
+\item
+  Better support for GADTs
+\item
+  Indexed recursive types
+\item
+  WebAssembly backend
+\item
+  Actually working compiler and sbt plugin
+\item
+  Better metals/IDE integration
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Further work}
+\protect\hypertarget{further-work}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Reasoning about I/O and concurrency (via ZIO?)
+\item
+  Support for exceptions
+\item
+  Scala 2.13 / latest Dotty / TASTY support
+\item
+  Standalone front-end for a verification friendly input language
+\item
+  Eta / Frege front-end
+\item
+  GraalVM/Truffle back-end
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Getting started}
+\protect\hypertarget{getting-started}{}
+
+\end{frame}
+
+\begin{frame}{Acknowledgments}
+\protect\hypertarget{acknowledgments}{}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{References}
+  \bibliographytrue
+  \printbibliography[heading=none]
+\end{frame}
+
+\end{document}

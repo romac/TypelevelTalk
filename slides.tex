@@ -132,13 +132,13 @@
 \begin{document}
 \frame{\titlepage}
 
-\begin{frame}{Who am I?}
-\protect\hypertarget{who-am-i}{}
+\hypertarget{who-am-i}{%
+\section{Who am I?}\label{who-am-i}}
 
-\end{frame}
+\hypertarget{what-is-stainless}{%
+\section{What is Stainless?}\label{what-is-stainless}}
 
 \begin{frame}{What is Stainless?}
-\protect\hypertarget{what-is-stainless}{}
 
 Stainless is a verification framework for higher-order programs written
 in a (now fairly substantive) subset of Scala.
@@ -153,8 +153,10 @@ We currently support the following features:
 
 \end{frame}
 
+\hypertarget{what-stainless-verifies}{%
+\section{What Stainless verifies}\label{what-stainless-verifies}}
+
 \begin{frame}[fragile]{What Stainless verifies}
-\protect\hypertarget{what-stainless-verifies}{}
 
 Stainless supports verifying:
 
@@ -212,8 +214,10 @@ Moreover, Stainless prevents \emph{PureScala} programs from:
 
 \end{frame}
 
+\hypertarget{verifying-typeclasses}{%
+\section{Verifying typeclasses}\label{verifying-typeclasses}}
+
 \begin{frame}[fragile]{Verifying typeclasses}
-\protect\hypertarget{verifying-typeclasses}{}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -373,8 +377,10 @@ Moreover, Stainless prevents \emph{PureScala} programs from:
 
 \end{frame}
 
+\hypertarget{termination-checking}{%
+\section{Termination checking}\label{termination-checking}}
+
 \begin{frame}{Termination checking}
-\protect\hypertarget{termination-checking}{}
 
 A \emph{verified} function in stainless is guaranteed to never crash,
 however, it can still lead to an infinite evaluation. Stainless
@@ -383,23 +389,24 @@ verification of safety properties.
 
 \end{frame}
 
-\begin{frame}{Under the hood}
-\protect\hypertarget{under-the-hood}{}
+\hypertarget{under-the-hood}{%
+\section{Under the hood}\label{under-the-hood}}
+
+\hypertarget{case-studies}{%
+\section{Case studies}\label{case-studies}}
+
+\begin{frame}{ConcRope}
+\protect\hypertarget{concrope}{}
 
 \end{frame}
 
-\begin{frame}[fragile]{Case studies}
-\protect\hypertarget{case-studies}{}
+\begin{frame}{Parellel Map-Reduce pipeline}
+\protect\hypertarget{parellel-map-reduce-pipeline}{}
 
-\begin{block}{ConcRope}
+\end{frame}
 
-\end{block}
-
-\begin{block}{Parellel Map-Reduce pipeline}
-
-\end{block}
-
-\begin{block}{Actor systems}
+\begin{frame}[fragile]{Actor systems}
+\protect\hypertarget{actor-systems}{}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -439,9 +446,10 @@ verification of safety properties.
 \end{Highlighting}
 \end{Shaded}
 
-\end{block}
+\end{frame}
 
-\begin{block}{Smart contracts verification}
+\begin{frame}[fragile]{Smart contracts verification}
+\protect\hypertarget{smart-contracts-verification}{}
 
 We also maintain a fork of Stainless, called \emph{Smart} which
 supports:
@@ -463,14 +471,14 @@ developed by SwissBorg.
 
 {[}0{]} https://github.com/epfl-lara/smart
 
-\end{block}
-
 \end{frame}
 
-\begin{frame}[fragile]{Bonus: Refinement and dependent function types}
-\protect\hypertarget{bonus-refinement-and-dependent-function-types}{}
+\hypertarget{bonus-refinement-and-dependent-function-types}{%
+\section{Bonus: Refinement and dependent function
+types}\label{bonus-refinement-and-dependent-function-types}}
 
-\begin{block}{Refinement types}
+\begin{frame}[fragile]{Refinement types}
+\protect\hypertarget{refinement-types}{}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -483,9 +491,10 @@ developed by SwissBorg.
 \end{Highlighting}
 \end{Shaded}
 
-\end{block}
+\end{frame}
 
-\begin{block}{Dependent function types}
+\begin{frame}[fragile]{Dependent function types}
+\protect\hypertarget{dependent-function-types}{}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -499,8 +508,6 @@ developed by SwissBorg.
 \KeywordTok{def}\NormalTok{ extractor: (e: Entry) => e.}\FunctionTok{Key}\NormalTok{ = }\FunctionTok{extractKey}\NormalTok{(_)}
 \end{Highlighting}
 \end{Shaded}
-
-\end{block}
 
 \end{frame}
 
@@ -519,8 +526,10 @@ developed by SwissBorg.
 
 \end{frame}
 
+\hypertarget{coming-up}{%
+\section{Coming up}\label{coming-up}}
+
 \begin{frame}{Coming up}
-\protect\hypertarget{coming-up}{}
 
 \begin{itemize}
 \tightlist
@@ -542,8 +551,10 @@ developed by SwissBorg.
 
 \end{frame}
 
+\hypertarget{further-work}{%
+\section{Further work}\label{further-work}}
+
 \begin{frame}{Further work}
-\protect\hypertarget{further-work}{}
 
 \begin{itemize}
 \tightlist
@@ -563,15 +574,11 @@ developed by SwissBorg.
 
 \end{frame}
 
-\begin{frame}{Getting started}
-\protect\hypertarget{getting-started}{}
+\hypertarget{getting-started}{%
+\section{Getting started}\label{getting-started}}
 
-\end{frame}
-
-\begin{frame}{Acknowledgments}
-\protect\hypertarget{acknowledgments}{}
-
-\end{frame}
+\hypertarget{acknowledgments}{%
+\section{Acknowledgments}\label{acknowledgments}}
 
 \begin{frame}[allowframebreaks]{References}
   \bibliographytrue

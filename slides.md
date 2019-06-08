@@ -2,15 +2,37 @@
 % Romain Ruetschi, EPFL LARA
 % June 14th, 2019
 
-# Who am I?
+# About me
+
+- Romain Ruetschi (just call me Romac)
+- MSc in Computer Science from EPFL
+- Been working for ~ 2 years as an engineer at LARA
+- Currently the second most active contributor to Stainless
+- Not an expert!
 
 # What is Stainless?
 
-Stainless is a verification framework for higher-order programs written in a (now fairly substantive) subset of Scala.
+Stainless is a verification framework for higher-order programs written in a (now fairly substantive) subset of Scala:
 
-We currently support the following features:
+- Traits, abstract classes, case classes, implicit classes, methods
+- Higher-order functions, lambdas
+- Any, Nothing, co-/contra-variant type parameters
+- Single inheritance
+- Anonymous and local classes, inner functions
+- Type members, type aliases
+- GADTs
+- `PartialFunction`s
+- Set, Bag, List, Map, Array, Byte, Short, Int, Long, BigInt
+- Local state, `while`, traits/classes with `var`s, and more...
 
-- TODO
+---
+
+Some Dotty-specific features:
+
+- Interesection and union types
+- Dependent function types
+- Extension methods
+- Opaque types
 
 # What Stainless verifies
 
@@ -103,9 +125,9 @@ implicit def optionMonoid[A](implicit val S: Semigroup[A]) =
 
     def combine(x: Option[A], y: Option[A]) =
       x match {
-        case None() => y
+        case None()   => y
         case Some(xv) => y match {
-          case None() => x
+          case None()   => x
           case Some(yv) => Some(S.combine(xv, yv))
         }
       }
@@ -173,34 +195,39 @@ A *verified* function in stainless is guaranteed to never crash, however, it can
 ## Actor systems
 
 ```scala
-  case class Primary(backup: ActorRef, counter: Counter) extends Behavior {
-    require(backup.name == "backup")
+case class Primary(backup: ActorRef, counter: Counter) extends Behavior {
+require(backup.name == "backup")
 
-    def processMsg(msg: Msg)(implicit ctx: ActorContext): Behavior = msg match {
-      case Inc =>
-        backup ! Inc
-        PrimBehav(backup, counter.increment)
+def processMsg(msg: Msg)(implicit ctx: ActorContext): Behavior = msg match {
+  case Inc =>
+    backup ! Inc
+    PrimBehav(backup, counter.increment)
 
-      case _ => this
-    }
-  }
+  case _ => this
+}
+}
 ```
 
-```scala
-  case class Backup(counter: Counter) extends Behavior {
-    def processMsg(msg: Msg)(implicit ctx: ActorContext): Behavior = msg match {
-      case Inc => BackBehav(counter.increment)
-      case _ => this
-    }
-  }
-```
+---
 
 ```scala
-  def invariant(s: ActorSystem): Boolean = {
-    (s.behaviors(PrimaryRef), s.behaviors(BackupRef)) match {
-      case (Primary(bRef, p), Backup(b)) if bRef == BackupRef =>
-        p.value == b.value + s.inboxes(PrimaryRef -> BackupRef).length
-      case _ => false
+case class Backup(counter: Counter) extends Behavior {
+  def processMsg(msg: Msg)(implicit ctx: ActorContext): Behavior = msg match {
+    case Inc => BackBehav(counter.increment)
+    case _ => this
+  }
+}
+```
+
+---
+
+```scala
+def invariant(s: ActorSystem): Boolean =
+  (s.behaviors(PrimaryRef), s.behaviors(BackupRef)) match {
+    case (Primary(bRef, p), Backup(b)) if bRef == BackupRef =>
+      val pending = s.inboxes(PrimaryRef -> BackupRef).length
+      p.value == b.value + pending
+    case _ => false
   }
 ```
 
@@ -209,7 +236,7 @@ A *verified* function in stainless is guaranteed to never crash, however, it can
 We also maintain a fork of Stainless, called *Smart* which supports:
 
 - Writing smart contracts in Scala
-- Specifiybg and proving properties of such programs, including precise reasoning about the `Uint256` data type
+- Specifying and proving properties of such programs, including precise reasoning about the `Uint256` data type
 - Generating Solidity source code from Scala, which can then be compiled and deployed using the usual tools for the Ethereum software ecosystem
 
 For example, we have modeled and verified a voting smart contract developed by SwissBorg.
@@ -219,6 +246,12 @@ For example, we have modeled and verified a voting smart contract developed by S
 # Bonus: Refinement and dependent function types
 
 ## Refinement types
+
+```scala
+type Nat = { n: BigInt => n >= BigInt(0) }
+```
+
+---
 
 ```scala
 def sortedInsert(
@@ -253,12 +286,19 @@ case class IntEntry() extends Entry {
 assert(extractor(entry) == 42) // VALID
 ```
 
+# Other features
+
+- sbt plugin
+- metals integration
+- Ghost context
+- Partial evaluation
+
 # Coming up
 
-- VC generator via bidirectional typechecker for System FR (TODO: ref)
+- VC generator via bidirectional typechecker for *System FR* (TODO: ref)
+- Indexed recursive types
 - Higher-kinded types
 - Better support for GADTs
-- Indexed recursive types
 - WebAssembly backend
 - Actually working compiler and sbt plugin 
 - Better metals/IDE integration
@@ -268,12 +308,18 @@ assert(extractor(entry) == 42) // VALID
 - Reasoning about I/O and concurrency (via ZIO?)
 - Support for exceptions
 - Scala 2.13 / latest Dotty / TASTY support
-- Standalone front-end for a verification friendly input language
+- Standalone front-end for a custom input language
 - Eta / Frege front-end
 - GraalVM/Truffle back-end
 
 # Getting started
 
+TODO
+
 # Acknowledgments
 
+TODO
+
 # References {.allowframebreaks}
+
+TODO

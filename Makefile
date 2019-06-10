@@ -5,12 +5,13 @@ slides.tex: slides.md
 		-t beamer $< \
 		--standalone \
 		--biblatex \
-		--slide-level 2 \
+		--slide-level 1 \
 		-o $@
-	@echo 'Compiled $< to $@'
+	@echo "Compiled $< to $@"
 
 slides.pdf: slides.tex
-	tectonic $<
+	@tectonic $<
+	@echo "Rendered $< to $@"
 
 clean:
 	$(RM) slides.tex slides.pdf

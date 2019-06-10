@@ -13,36 +13,6 @@
 % Prevent slide breaks in the middle of a paragraph
 \widowpenalties 1 10000
 \raggedbottom
-\setbeamertemplate{part page}{
-  \centering
-  \begin{beamercolorbox}[sep=16pt,center]{part title}
-    \usebeamerfont{part title}\insertpart\par
-  \end{beamercolorbox}
-}
-\setbeamertemplate{section page}{
-  \centering
-  \begin{beamercolorbox}[sep=12pt,center]{part title}
-    \usebeamerfont{section title}\insertsection\par
-  \end{beamercolorbox}
-}
-\setbeamertemplate{subsection page}{
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center]{part title}
-    \usebeamerfont{subsection title}\insertsubsection\par
-  \end{beamercolorbox}
-}
-\AtBeginPart{
-  \frame{\partpage}
-}
-\AtBeginSection{
-  \ifbibliography
-  \else
-    \frame{\sectionpage}
-  \fi
-}
-\AtBeginSubsection{
-  \frame{\subsectionpage}
-}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
@@ -55,6 +25,7 @@
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
+\usetheme[]{CambridgeUS}
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \IfFileExists{microtype.sty}{% use microtype if available
@@ -76,7 +47,7 @@
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
   pdftitle={Formal verification of Scala programs with Stainless},
-  pdfauthor={Romain Ruetschi, EPFL LARA},
+  pdfauthor={Romain Ruetschi},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
@@ -123,42 +94,124 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\institute{LARA, EPFL}
+\useinnertheme{rectangles}
+\useoutertheme{infolines}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\usecolortheme[named=darkred]{structure}
 \usepackage[]{biblatex}
+\addbibresource{slides.bib}
 
 \title{Formal verification of Scala programs with Stainless}
-\author{Romain Ruetschi, EPFL LARA}
-\date{June 14th, 2019}
+\author{Romain Ruetschi}
+\date{Typelevel Summit Lausanne 2019}
 
 \begin{document}
 \frame{\titlepage}
 
-\hypertarget{who-am-i}{%
-\section{Who am I?}\label{who-am-i}}
-
-\hypertarget{what-is-stainless}{%
-\section{What is Stainless?}\label{what-is-stainless}}
-
-\begin{frame}{What is Stainless?}
-
-Stainless is a verification framework for higher-order programs written
-in a (now fairly substantive) subset of Scala.
-
-We currently support the following features:
+\begin{frame}{About me}
+\protect\hypertarget{about-me}{}
 
 \begin{itemize}
 \tightlist
 \item
-  TODO
+  Romain Ruetschi (Romac)
+\item
+  MSc in Computer Science from EPFL
+\item
+  \textasciitilde2 years as an engineer at LARA
 \end{itemize}
 
 \end{frame}
 
-\hypertarget{what-stainless-verifies}{%
-\section{What Stainless verifies}\label{what-stainless-verifies}}
+\begin{frame}{Outline}
+\protect\hypertarget{outline}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Stainless: Verification framework for Scala
+\item
+  What Stainless verifies
+\item
+  Termination checker
+\item
+  Case study: Verifying typeclasses
+\item
+  More case studies
+\item
+  Bonus
+\item
+  Coming soon / further work
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Stainless: Verification framework for Scala}
+\protect\hypertarget{stainless-verification-framework-for-scala}{}
+
+Stainless is a verification framework for higher-order programs written
+in a subset of Scala, named \emph{PureScala}:
+
+\begin{itemize}
+\tightlist
+\item
+  Traits, abstract classes, case classes, implicit classes, methods
+\item
+  Higher-order functions, lambdas
+\item
+  Any, Nothing, co-/contra-variant type parameters
+\item
+  Single inheritance
+\item
+  Anonymous and local classes, inner functions
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+\tightlist
+\item
+  Type members, type aliases
+\item
+  GADTs
+\item
+  \texttt{PartialFunction}s
+\item
+  Set, Bag, List, Map, Array, Byte, Short, Int, Long, BigInt
+\item
+  Local state, \texttt{while}, traits/classes with \texttt{var}s, and
+  more\ldots{}
+\end{itemize}
+
+Currently supports Scala 2.12.x, 2.13 coming up!
+
+\end{frame}
+
+\begin{frame}
+
+Some Dotty-specific features:
+
+\begin{itemize}
+\tightlist
+\item
+  Intersection and union types
+\item
+  Dependent function types
+\item
+  Extension methods
+\item
+  Opaque types
+\end{itemize}
+
+Currently only supports Dotty 0.12.0, will try to catch up.
+
+\end{frame}
 
 \begin{frame}[fragile]{What Stainless verifies}
-
-Stainless supports verifying:
+\protect\hypertarget{what-stainless-verifies}{}
 
 \begin{itemize}
 \tightlist
@@ -175,8 +228,8 @@ Stainless supports verifying:
   \textbf{Loop invariants}: inductive assertions that hold in each loop
   iteration after the while condition check passes
 \item
-  \textbf{ADT/Class invariants}: assertions on immutable parameters of
-  constructors (which remain true for all constructed values)
+  \textbf{ADT/Class invariants}: assertions on constructors parameters
+  (which remain true for all constructed values)
 \end{itemize}
 
 \end{frame}
@@ -189,35 +242,135 @@ absence of runtime failures}:
 \begin{itemize}
 \tightlist
 \item
-  completeness of pattern matching
+  Exhaustiveness of pattern matching (taking guards into account)
 \item
-  division by zero, array bounds checks
+  Division by zero, array bounds checks
 \item
-  map domain checks
+  Map domain checks
 \end{itemize}
 
 \end{frame}
 
 \begin{frame}
 
-Moreover, Stainless prevents \emph{PureScala} programs from:
+Moreover, Stainless also checks \emph{PureScala} programs from:
 
 \begin{itemize}
 \tightlist
 \item
-  creating null values or unininitalized local variables or fields
+  Creating null values or unininitalized local variables or fields
 \item
-  explicitly throwing an exception
+  Cxplicitly throwing an exception
 \item
-  overflows and underflows on sized integer types
+  Cverflows and underflows on sized integer types
 \end{itemize}
 
 \end{frame}
 
-\hypertarget{verifying-typeclasses}{%
-\section{Verifying typeclasses}\label{verifying-typeclasses}}
+\begin{frame}{Termination checker}
+\protect\hypertarget{termination-checker}{}
 
-\begin{frame}[fragile]{Verifying typeclasses}
+A \emph{verified} function in stainless is guaranteed to never crash,
+however, it can still lead to an infinite evaluation.
+
+Curry-Howard correspondance tells us that non-terminating functions
+allows us to prove any proposition.
+
+Stainless therefore provides a termination checker that complements the
+verification of safety properties.
+
+\end{frame}
+
+\begin{frame}{Pipeline}
+\protect\hypertarget{pipeline}{}
+
+TODO: Image
+
+\begin{itemize}
+\tightlist
+\item
+  Scala/Dotty compiler
+\item
+  Extraction
+\item
+  Lowering
+\item
+  Inox
+\item
+  SMT solver
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Tutorial: Insertion sort}
+\protect\hypertarget{tutorial-insertion-sort}{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \FunctionTok{isSorted}\NormalTok{(l: List[BigInt]) : Boolean = l }\KeywordTok{match}\NormalTok{ \{}
+  \KeywordTok{case}\NormalTok{ Nil              => }\KeywordTok{true}
+  \KeywordTok{case}\NormalTok{ _ :: Nil         => }\KeywordTok{true}
+  \KeywordTok{case}\NormalTok{ x1 :: x2 :: rest =>}
+\NormalTok{    x1 < x2 && }\FunctionTok{isSorted}\NormalTok{(x2 :: rest)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \FunctionTok{sInsert}\NormalTok{(x: BigInt, l: List[BigInt]) : List[BigInt] = \{}
+\NormalTok{  l }\KeywordTok{match}\NormalTok{ \{}
+    \KeywordTok{case}\NormalTok{ Nil => x :: Nil}
+    \KeywordTok{case}\NormalTok{ e :: rest }\KeywordTok{if}\NormalTok{ (x == e) => l}
+    \KeywordTok{case}\NormalTok{ e :: rest }\KeywordTok{if}\NormalTok{ (x < e)  => x :: e ::rest}
+    \KeywordTok{case}\NormalTok{ e :: rest }\KeywordTok{if}\NormalTok{ (x > e)  => e :: }\FunctionTok{sInsert}\NormalTok{(x, rest)}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \FunctionTok{sInsert}\NormalTok{(x: BigInt, l: List[BigInt]) : List[BigInt] = \{}
+  \FunctionTok{require}\NormalTok{(}\FunctionTok{isSorted}\NormalTok{(l))}
+  \CommentTok{// same as before}
+\NormalTok{\} ensuring \{ res =>}
+  \FunctionTok{isSorted}\NormalTok{(res) &&}
+\NormalTok{  res.}\FunctionTok{size}\NormalTok{ == l.}\FunctionTok{size}\NormalTok{ + }\DecValTok{1}\NormalTok{ &&}
+\NormalTok{  res.}\FunctionTok{content}\NormalTok{ == l.}\FunctionTok{content}\NormalTok{ ++ Set(x)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \FunctionTok{sort}\NormalTok{(l: List[BigInt]): List[BigInt] = l }\KeywordTok{match}\NormalTok{ \{}
+  \KeywordTok{case}\NormalTok{ Nil     => Nil}
+  \KeywordTok{case}\NormalTok{ x :: xs => }\FunctionTok{sInsert}\NormalTok{(x, }\FunctionTok{sort}\NormalTok{(xs))}
+\NormalTok{\} ensuring \{ res =>}
+  \FunctionTok{isSorted}\NormalTok{(res) &&}
+\NormalTok{  res.}\FunctionTok{size}\NormalTok{ == l.}\FunctionTok{size}\NormalTok{ &&}
+\NormalTok{  res.}\FunctionTok{content}\NormalTok{ == l.}\FunctionTok{content}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Case study: Verifying typeclasses}
+\protect\hypertarget{case-study-verifying-typeclasses}{}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -249,7 +402,7 @@ Moreover, Stainless prevents \emph{PureScala} programs from:
 \begin{Highlighting}[]
 \KeywordTok{abstract} \KeywordTok{class}\NormalTok{ Semigroup[A] \{}
   \KeywordTok{def} \FunctionTok{combine}\NormalTok{(x: A, y: A): A}
-  
+
 \NormalTok{  @law }\KeywordTok{def} \FunctionTok{law_assoc}\NormalTok{(x: A, y: A, z: A) =}
     \FunctionTok{combine}\NormalTok{(x, }\FunctionTok{combine}\NormalTok{(y, z)) == }\FunctionTok{combine}\NormalTok{(}\FunctionTok{combine}\NormalTok{(x, y), z)}
 \NormalTok{\}}
@@ -303,9 +456,9 @@ Moreover, Stainless prevents \emph{PureScala} programs from:
 
     \KeywordTok{def} \FunctionTok{combine}\NormalTok{(x: Option[A], y: Option[A]) =}
 \NormalTok{      x }\KeywordTok{match}\NormalTok{ \{}
-        \KeywordTok{case}\NormalTok{ None() => y}
+        \KeywordTok{case}\NormalTok{ None()   => y}
         \KeywordTok{case}\NormalTok{ Some(xv) => y }\KeywordTok{match}\NormalTok{ \{}
-          \KeywordTok{case}\NormalTok{ None() => x}
+          \KeywordTok{case}\NormalTok{ None()   => x}
           \KeywordTok{case}\NormalTok{ Some(yv) => Some(S.}\FunctionTok{combine}\NormalTok{(xv, yv))}
 \NormalTok{        \}}
 \NormalTok{      \}}
@@ -319,38 +472,10 @@ Moreover, Stainless prevents \emph{PureScala} programs from:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{def} \FunctionTok{lemma_optionCombineAssoc}\NormalTok{(x: Option[A], y: Option[A], z: Option[A]) = \{}
-  \CommentTok{// TODO}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\end{frame}
-
-\begin{frame}[fragile]
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \KeywordTok{implicit} \KeywordTok{def}\NormalTok{ optionMonoid[A](}\KeywordTok{implicit} \KeywordTok{val}\NormalTok{ S: Semigroup[A]) =}
   \KeywordTok{new}\NormalTok{ Monoid[Option[A]] \{}
     \CommentTok{// ...}
-    
-    \KeywordTok{override} \KeywordTok{def} \FunctionTok{law_assoc}\NormalTok{(x: Option[A], y: Option[A], z: Option[A]) =}
-      \KeywordTok{super}\NormalTok{.}\FunctionTok{law_assoc}\NormalTok{(x, y, z) because }\FunctionTok{lemma_optionCombineAssoc}\NormalTok{(x, y, z)}
-\NormalTok{  \}  }
-\end{Highlighting}
-\end{Shaded}
 
-\end{frame}
-
-\begin{frame}[fragile]
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{implicit} \KeywordTok{def}\NormalTok{ optionMonoid[A](}\KeywordTok{implicit} \KeywordTok{val}\NormalTok{ S: Semigroup[A]) =}
-  \KeywordTok{new}\NormalTok{ Monoid[Option[A]] \{}
-    \CommentTok{// ...}
-    
     \KeywordTok{override} \KeywordTok{def} \FunctionTok{law_assoc}\NormalTok{(@induct x: Option[A], y: Option[A], z: Option[A]) =}
       \KeywordTok{super}\NormalTok{.}\FunctionTok{law_assoc}\NormalTok{(x, y, z)}
 \NormalTok{  \}}
@@ -365,7 +490,7 @@ Moreover, Stainless prevents \emph{PureScala} programs from:
 \begin{Highlighting}[]
 \KeywordTok{def}\NormalTok{ foldMap[M, A](xs: List[A])(f: A => M)(}\KeywordTok{implicit}\NormalTok{ M: Monoid[A]): M =}
 \NormalTok{  xs.}\FunctionTok{map}\NormalTok{(f).}\FunctionTok{fold}\NormalTok{(M.}\FunctionTok{empty}\NormalTok{)(M.}\FunctionTok{append}\NormalTok{)}
-  
+
 \NormalTok{@extern}
 \KeywordTok{def}\NormalTok{ parFoldMap[M, A](xs: List[A])(f: A => M)(}\KeywordTok{implicit}\NormalTok{ M: Monoid[A]): M = \{}
 \NormalTok{  xs.}\FunctionTok{toScala}\NormalTok{.}\FunctionTok{par}\NormalTok{.}\FunctionTok{map}\NormalTok{(f).}\FunctionTok{fold}\NormalTok{(M.}\FunctionTok{empty}\NormalTok{)(M.}\FunctionTok{append}\NormalTok{)}
@@ -377,79 +502,116 @@ Moreover, Stainless prevents \emph{PureScala} programs from:
 
 \end{frame}
 
-\hypertarget{termination-checking}{%
-\section{Termination checking}\label{termination-checking}}
+\begin{frame}{More case studies}
+\protect\hypertarget{more-case-studies}{}
 
-\begin{frame}{Termination checking}
+\begin{block}{Conc-Rope}
 
-A \emph{verified} function in stainless is guaranteed to never crash,
-however, it can still lead to an infinite evaluation. Stainless
-therefore provides a termination checker that complements the
-verification of safety properties.
+Verified data-structure which provides
 
-\end{frame}
+\begin{itemize}
+\tightlist
+\item
+  Worst-case \(O(log n)\) time lookup, update, split and concatenation
+  operations
+\item
+  Amortized O(1) time append and prepend operations
+\end{itemize}
 
-\hypertarget{under-the-hood}{%
-\section{Under the hood}\label{under-the-hood}}
+Very useful for efficient data-parellel operations!
 
-\hypertarget{case-studies}{%
-\section{Case studies}\label{case-studies}}
+{[}ConcRope{]} TODO: Ref
 
-\begin{frame}{ConcRope}
-\protect\hypertarget{concrope}{}
-
-\end{frame}
-
-\begin{frame}{Parellel Map-Reduce pipeline}
-\protect\hypertarget{parellel-map-reduce-pipeline}{}
+\end{block}
 
 \end{frame}
 
-\begin{frame}[fragile]{Actor systems}
-\protect\hypertarget{actor-systems}{}
+\begin{frame}
+
+\begin{block}{Parellel Map-Reduce pipeline}
+
+Fully verified implementation of the previous running example, using a
+Conc-Rope under the hood instead of Scala's `par' operator.
+
+Built by Lucien Iseli, BSc student, as a semester project.
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{block}{Actor systems}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-  \KeywordTok{case} \KeywordTok{class} \FunctionTok{Primary}\NormalTok{(backup: ActorRef, counter: Counter) }\KeywordTok{extends}\NormalTok{ Behavior \{}
-    \FunctionTok{require}\NormalTok{(backup.}\FunctionTok{name}\NormalTok{ == }\StringTok{"backup"}\NormalTok{)}
+\KeywordTok{case} \KeywordTok{class} \FunctionTok{Primary}\NormalTok{(backup: ActorRef, counter: Counter) }\KeywordTok{extends}\NormalTok{ Behavior \{}
+  \FunctionTok{require}\NormalTok{(backup.}\FunctionTok{name}\NormalTok{ == }\StringTok{"backup"}\NormalTok{)}
 
-    \KeywordTok{def} \FunctionTok{processMsg}\NormalTok{(msg: Msg)(}\KeywordTok{implicit}\NormalTok{ ctx: ActorContext): Behavior = msg }\KeywordTok{match}\NormalTok{ \{}
+  \KeywordTok{def} \FunctionTok{processMsg}\NormalTok{(msg: Msg)(}\KeywordTok{implicit}\NormalTok{ ctx: ActorContext): Behavior =}
+\NormalTok{    msg }\KeywordTok{match}\NormalTok{ \{}
       \KeywordTok{case}\NormalTok{ Inc =>}
 \NormalTok{        backup ! Inc}
         \FunctionTok{PrimBehav}\NormalTok{(backup, counter.}\FunctionTok{increment}\NormalTok{)}
 
       \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{this}
 \NormalTok{    \}}
-\NormalTok{  \}}
+\NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-  \KeywordTok{case} \KeywordTok{class} \FunctionTok{Backup}\NormalTok{(counter: Counter) }\KeywordTok{extends}\NormalTok{ Behavior \{}
-    \KeywordTok{def} \FunctionTok{processMsg}\NormalTok{(msg: Msg)(}\KeywordTok{implicit}\NormalTok{ ctx: ActorContext): Behavior = msg }\KeywordTok{match}\NormalTok{ \{}
-      \KeywordTok{case}\NormalTok{ Inc => }\FunctionTok{BackBehav}\NormalTok{(counter.}\FunctionTok{increment}\NormalTok{)}
-      \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{this}
-\NormalTok{    \}}
-\NormalTok{  \}}
-\end{Highlighting}
-\end{Shaded}
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
 
 \begin{Shaded}
 \begin{Highlighting}[]
-  \KeywordTok{def} \FunctionTok{invariant}\NormalTok{(s: ActorSystem): Boolean = \{}
-\NormalTok{    (s.}\FunctionTok{behaviors}\NormalTok{(PrimaryRef), s.}\FunctionTok{behaviors}\NormalTok{(BackupRef)) }\KeywordTok{match}\NormalTok{ \{}
-      \KeywordTok{case}\NormalTok{ (}\FunctionTok{Primary}\NormalTok{(bRef, p), }\FunctionTok{Backup}\NormalTok{(b)) }\KeywordTok{if}\NormalTok{ bRef == BackupRef =>}
-\NormalTok{        p.}\FunctionTok{value}\NormalTok{ == b.}\FunctionTok{value}\NormalTok{ + s.}\FunctionTok{inboxes}\NormalTok{(PrimaryRef -> BackupRef).}\FunctionTok{length}
-      \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{false}
+\KeywordTok{case} \KeywordTok{class} \FunctionTok{Backup}\NormalTok{(counter: Counter) }\KeywordTok{extends}\NormalTok{ Behavior \{}
+  \KeywordTok{def} \FunctionTok{processMsg}\NormalTok{(msg: Msg)(}\KeywordTok{implicit}\NormalTok{ ctx: ActorContext): Behavior = msg }\KeywordTok{match}\NormalTok{ \{}
+    \KeywordTok{case}\NormalTok{ Inc => }\FunctionTok{BackBehav}\NormalTok{(counter.}\FunctionTok{increment}\NormalTok{)}
+    \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{this}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \FunctionTok{invariant}\NormalTok{(s: ActorSystem): Boolean =}
+\NormalTok{  (s.}\FunctionTok{behaviors}\NormalTok{(PrimaryRef), s.}\FunctionTok{behaviors}\NormalTok{(BackupRef)) }\KeywordTok{match}\NormalTok{ \{}
+    \KeywordTok{case}\NormalTok{ (}\FunctionTok{Primary}\NormalTok{(bRef, p), }\FunctionTok{Backup}\NormalTok{(b)) }\KeywordTok{if}\NormalTok{ bRef == BackupRef =>}
+      \KeywordTok{val}\NormalTok{ pending = s.}\FunctionTok{inboxes}\NormalTok{(PrimaryRef -> BackupRef).}\FunctionTok{length}
+\NormalTok{      p.}\FunctionTok{value}\NormalTok{ == b.}\FunctionTok{value}\NormalTok{ + pending}
+    \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{false}
 \NormalTok{  \}}
 \end{Highlighting}
 \end{Shaded}
 
 \end{frame}
 
-\begin{frame}[fragile]{Smart contracts verification}
-\protect\hypertarget{smart-contracts-verification}{}
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \FunctionTok{preserveInv}\NormalTok{(s: ActorSystem, n: ActorRef, m: ActorRef) = \{}
+  \FunctionTok{require}\NormalTok{(}\FunctionTok{invariant}\NormalTok{(s))}
+  \KeywordTok{val}\NormalTok{ next = s.}\FunctionTok{step}\NormalTok{(n, m)}
+  \FunctionTok{invariant}\NormalTok{(next)}
+\NormalTok{\}.}\FunctionTok{holds}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{block}{Smart contracts}
 
 We also maintain a fork of Stainless, called \emph{Smart} which
 supports:
@@ -459,7 +621,7 @@ supports:
 \item
   Writing smart contracts in Scala
 \item
-  Specifiybg and proving properties of such programs, including precise
+  Specifying and proving properties of such programs, including precise
   reasoning about the \texttt{Uint256} data type
 \item
   Generating Solidity source code from Scala, which can then be compiled
@@ -471,14 +633,22 @@ developed by SwissBorg.
 
 {[}0{]} https://github.com/epfl-lara/smart
 
+\end{block}
+
 \end{frame}
 
-\hypertarget{bonus-refinement-and-dependent-function-types}{%
-\section{Bonus: Refinement and dependent function
-types}\label{bonus-refinement-and-dependent-function-types}}
+\begin{frame}[fragile]{Bonus: Refinement types}
+\protect\hypertarget{bonus-refinement-types}{}
 
-\begin{frame}[fragile]{Refinement types}
-\protect\hypertarget{refinement-types}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{type}\NormalTok{ Nat = \{ n: BigInt => n >= }\FunctionTok{BigInt}\NormalTok{(}\DecValTok{0}\NormalTok{) \}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -493,8 +663,8 @@ types}\label{bonus-refinement-and-dependent-function-types}}
 
 \end{frame}
 
-\begin{frame}[fragile]{Dependent function types}
-\protect\hypertarget{dependent-function-types}{}
+\begin{frame}[fragile]{Bonus: Dependent function types}
+\protect\hypertarget{bonus-dependent-function-types}{}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -526,38 +696,51 @@ types}\label{bonus-refinement-and-dependent-function-types}}
 
 \end{frame}
 
-\hypertarget{coming-up}{%
-\section{Coming up}\label{coming-up}}
-
-\begin{frame}{Coming up}
+\begin{frame}{Other features}
+\protect\hypertarget{other-features}{}
 
 \begin{itemize}
 \tightlist
 \item
-  VC generator via bidirectional typechecker for System FR (TODO: ref)
+  sbt plugin + metals integration
+\item
+  Ghost context
+\item
+  Partial evaluation
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Coming soon(ish)}
+\protect\hypertarget{coming-soonish}{}
+
+\begin{itemize}
+\tightlist
+\item
+  VC generator via bidirectional typechecker for \emph{System FR} (TODO:
+  ref)
+\item
+  Indexed recursive types
 \item
   Higher-kinded types
 \item
   Better support for GADTs
 \item
-  Indexed recursive types
-\item
   WebAssembly backend
-\item
-  Actually working compiler and sbt plugin
 \item
   Better metals/IDE integration
 \end{itemize}
 
 \end{frame}
 
-\hypertarget{further-work}{%
-\section{Further work}\label{further-work}}
-
 \begin{frame}{Further work}
+\protect\hypertarget{further-work}{}
 
 \begin{itemize}
 \tightlist
+\item
+  Port synthesis and resource analysis frameworks over from Leon
+  predecessor
 \item
   Reasoning about I/O and concurrency (via ZIO?)
 \item
@@ -565,7 +748,7 @@ types}\label{bonus-refinement-and-dependent-function-types}}
 \item
   Scala 2.13 / latest Dotty / TASTY support
 \item
-  Standalone front-end for a verification friendly input language
+  Standalone front-end for a custom input language
 \item
   Eta / Frege front-end
 \item
@@ -574,11 +757,34 @@ types}\label{bonus-refinement-and-dependent-function-types}}
 
 \end{frame}
 
-\hypertarget{getting-started}{%
-\section{Getting started}\label{getting-started}}
+\begin{frame}{Getting started}
+\protect\hypertarget{getting-started}{}
 
-\hypertarget{acknowledgments}{%
-\section{Acknowledgments}\label{acknowledgments}}
+\href{https://stainless.epfl.ch}{stainless.epfl.ch}
+
+\end{frame}
+
+\begin{frame}{Acknowledgments}
+\protect\hypertarget{acknowledgments}{}
+
+Stainless is the latest iteration of our verification system for Scala,
+which was built and improved over time by many EPFL PhD students:
+Nicolas Voirol, Régis Blanc, Eva Darulova, Etienne Kneuss, Ravichandhran
+Kandhadai Madhavan, Mikaël Mayer, Emmanouil Koukoutos, Ruzica Piskac,
+Philippe Suter, as well as Marco Antognini, Ivan Kuraj, Lars Hupel,
+Samuel Grütter, and myself.
+
+Many thanks as well to our friends at TripleQuote for their help with
+the compiler and sbt plugins.
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{References}
+\protect\hypertarget{references}{}
+
+TODO
+
+\end{frame}
 
 \begin{frame}[allowframebreaks]{References}
   \bibliographytrue

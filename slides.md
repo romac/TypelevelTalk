@@ -153,6 +153,27 @@ def sort(l: List[BigInt]): List[BigInt] = l match {
 }
 ```
 
+---
+
+```
+  ┌───────────────────┐
+╔═╡ stainless summary ╞═══════════════════════════════════╗
+║ └───────────────────┘                                   ║
+║ sInsert   postcondition   valid   nativez3   0.081      ║
+║ sort      postcondition   valid   nativez3   0.931      ║
+║ sort      precondition    valid   nativez3   0.429      ║
+╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+║ total: 3  valid: 3  invalid: 0  unknown: 0  time: 1.441 ║
+╚═════════════════════════════════════════════════════════╝
+```
+
+---
+
+# Comparison
+
+- **Stainless:** 27 LOC
+- **Coq:** 140 LOC
+
 # Case study: Verifying typeclasses
 
 ```scala
@@ -190,7 +211,7 @@ abstract class Monoid[A]
 
   def empty: A
 
-  @law def law_identity(x: A) =
+  @law def law_leftIdentity(x: A) =
     combine(empty, x) == x
 
   @law def law_rightIdentity(x: A) =
@@ -207,6 +228,20 @@ implicit def sumMonoid = new Monoid[Sum] {
   def empty = 0
   def combine(x: Sum, y: Sum) = Sum(x.get + y.get)
 }
+```
+
+---
+
+```
+  ┌───────────────────┐
+╔═╡ stainless summary ╞═══════════════════════════════════╗
+║ └───────────────────┘                                   ║
+║ law_leftIdentity    law   valid   nativez3   0.223      ║
+║ law_rightIdentity   law   valid   nativez3   0.407      ║
+║ law_assoc           law   valid   nativez3   0.944      ║
+╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+║ total: 3  valid: 3  invalid: 0  unknown: 0  time: 1.574 ║
+╚═════════════════════════════════════════════════════════╝
 ```
 
 ---
@@ -255,7 +290,7 @@ def parFoldMap[M, A](xs: List[A])(f: A => M)(implicit M: Monoid[A]): M = {
 
 # More case studies
 
-## Conc-Rope
+# Conc-Rope
 
 Verified data-structure which provides
 
@@ -268,7 +303,7 @@ Very useful for efficient data-parellel operations!
 
 ---
 
-## Parellel Map-Reduce pipeline
+# Parellel Map-Reduce pipeline
 
 Fully verified implementation of the previous running example, using a Conc-Rope under the hood instead of Scala's `par' operator.
 
@@ -276,7 +311,7 @@ Built by Lucien Iseli, BSc student, as a semester project.
 
 ---
 
-## Actor systems
+# Actor systems
 
 ```scala
 case class Primary(backup: ActorRef, counter: Counter) extends Behavior {
@@ -328,7 +363,7 @@ def preserveInv(s: ActorSystem, n: ActorRef, m: ActorRef) = {
 
 ---
 
-## Smart contracts
+# Smart contracts
 
 We also maintain a fork of Stainless, called *Smart* which supports:
 
@@ -406,9 +441,18 @@ assert(extractor(entry) == 42) // VALID
 - Eta / Frege front-end
 - GraalVM/Truffle back-end
 
-# Getting started
+# Learn more
 
-[stainless.epfl.ch](https://stainless.epfl.ch)
+- Installation
+- Tutorial
+- Ghost context
+- Imperative features
+- Working with existing code
+- Proving theorems
+- Stainless library
+- and more...
+
+=> [stainless.epfl.ch](https://stainless.epfl.ch)
 
 # Acknowledgments
 

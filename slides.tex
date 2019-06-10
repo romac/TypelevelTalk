@@ -369,6 +369,35 @@ TODO: Image
 
 \end{frame}
 
+\begin{frame}[fragile]
+
+\begin{verbatim}
+  ┌───────────────────┐
+╔═╡ stainless summary ╞═══════════════════════════════════╗
+║ └───────────────────┘                                   ║
+║ sInsert   postcondition   valid   nativez3   0.081      ║
+║ sort      postcondition   valid   nativez3   0.931      ║
+║ sort      precondition    valid   nativez3   0.429      ║
+╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+║ total: 3  valid: 3  invalid: 0  unknown: 0  time: 1.441 ║
+╚═════════════════════════════════════════════════════════╝
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}{Comparison}
+\protect\hypertarget{comparison}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Stainless:} 27 LOC
+\item
+  \textbf{Coq:} 140 LOC
+\end{itemize}
+
+\end{frame}
+
 \begin{frame}[fragile]{Case study: Verifying typeclasses}
 \protect\hypertarget{case-study-verifying-typeclasses}{}
 
@@ -420,7 +449,7 @@ TODO: Image
 
   \KeywordTok{def}\NormalTok{ empty: A}
 
-\NormalTok{  @law }\KeywordTok{def} \FunctionTok{law_identity}\NormalTok{(x: A) =}
+\NormalTok{  @law }\KeywordTok{def} \FunctionTok{law_leftIdentity}\NormalTok{(x: A) =}
     \FunctionTok{combine}\NormalTok{(empty, x) == x}
 
 \NormalTok{  @law }\KeywordTok{def} \FunctionTok{law_rightIdentity}\NormalTok{(x: A) =}
@@ -443,6 +472,22 @@ TODO: Image
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{verbatim}
+  ┌───────────────────┐
+╔═╡ stainless summary ╞═══════════════════════════════════╗
+║ └───────────────────┘                                   ║
+║ law_leftIdentity    law   valid   nativez3   0.223      ║
+║ law_rightIdentity   law   valid   nativez3   0.407      ║
+║ law_assoc           law   valid   nativez3   0.944      ║
+╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+║ total: 3  valid: 3  invalid: 0  unknown: 0  time: 1.574 ║
+╚═════════════════════════════════════════════════════════╝
+\end{verbatim}
 
 \end{frame}
 
@@ -505,7 +550,10 @@ TODO: Image
 \begin{frame}{More case studies}
 \protect\hypertarget{more-case-studies}{}
 
-\begin{block}{Conc-Rope}
+\end{frame}
+
+\begin{frame}{Conc-Rope}
+\protect\hypertarget{conc-rope}{}
 
 Verified data-structure which provides
 
@@ -522,26 +570,20 @@ Very useful for efficient data-parellel operations!
 
 {[}ConcRope{]} TODO: Ref
 
-\end{block}
-
 \end{frame}
 
-\begin{frame}
-
-\begin{block}{Parellel Map-Reduce pipeline}
+\begin{frame}{Parellel Map-Reduce pipeline}
+\protect\hypertarget{parellel-map-reduce-pipeline}{}
 
 Fully verified implementation of the previous running example, using a
 Conc-Rope under the hood instead of Scala's `par' operator.
 
 Built by Lucien Iseli, BSc student, as a semester project.
 
-\end{block}
-
 \end{frame}
 
-\begin{frame}[fragile]
-
-\begin{block}{Actor systems}
+\begin{frame}[fragile]{Actor systems}
+\protect\hypertarget{actor-systems}{}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -559,8 +601,6 @@ Built by Lucien Iseli, BSc student, as a semester project.
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
-
-\end{block}
 
 \end{frame}
 
@@ -609,9 +649,8 @@ Built by Lucien Iseli, BSc student, as a semester project.
 
 \end{frame}
 
-\begin{frame}[fragile]
-
-\begin{block}{Smart contracts}
+\begin{frame}[fragile]{Smart contracts}
+\protect\hypertarget{smart-contracts}{}
 
 We also maintain a fork of Stainless, called \emph{Smart} which
 supports:
@@ -632,8 +671,6 @@ For example, we have modeled and verified a voting smart contract
 developed by SwissBorg.
 
 {[}0{]} https://github.com/epfl-lara/smart
-
-\end{block}
 
 \end{frame}
 
@@ -757,10 +794,30 @@ developed by SwissBorg.
 
 \end{frame}
 
-\begin{frame}{Getting started}
-\protect\hypertarget{getting-started}{}
+\begin{frame}{Learn more}
+\protect\hypertarget{learn-more}{}
 
-\href{https://stainless.epfl.ch}{stainless.epfl.ch}
+\begin{itemize}
+\tightlist
+\item
+  Installation
+\item
+  Tutorial
+\item
+  Ghost context
+\item
+  Imperative features
+\item
+  Working with existing code
+\item
+  Proving theorems
+\item
+  Stainless library
+\item
+  and more\ldots{}
+\end{itemize}
+
+=\textgreater{} \href{https://stainless.epfl.ch}{stainless.epfl.ch}
 
 \end{frame}
 

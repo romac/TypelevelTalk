@@ -7,11 +7,14 @@ biblio-title: References
 bibliography: slides.bib
 section-titles: false
 header-includes:
-  - \institute{LARA, EPFL}
+  - \institute{Laboratory for Automated Reasoning and Analysis, EPFL}
   - \useinnertheme{rectangles}
   - \useoutertheme{infolines}
   - \definecolor{darkred}{rgb}{0.8,0,0}
   - \usecolortheme[named=darkred]{structure}
+  - \setbeamertemplate{footline}[frame number]{}
+  - \setbeamertemplate{navigation symbols}{}
+  - \setbeamertemplate{footline}{}
 ---
 
 # About me
@@ -48,7 +51,7 @@ Stainless is a verification framework for higher-order programs written in a sub
 - Set, Bag, List, Map, Array, Byte, Short, Int, Long, BigInt
 - Local state, `while`, traits/classes with `var`s, and more...
 
-Currently supports Scala 2.12.x, 2.13 coming up!
+Currently supports Scala 2.12.x.
 
 ---
 
@@ -82,14 +85,12 @@ Stainless also automatically performs **automatic checks for the absence of runt
 Moreover, Stainless also checks *PureScala* programs from:
 
 - Creating null values or unininitalized local variables or fields
-- Cxplicitly throwing an exception
-- Cverflows and underflows on sized integer types
+- Explicitly throwing an exception
+- Overflows and underflows on sized integer types
 
 # Termination checker
 
 A *verified* function in stainless is guaranteed to never crash, however, it can still lead to an infinite evaluation.
-
-Curry-Howard correspondance tells us that non-terminating functions allows us to prove any proposition.
 
 Stainless therefore provides a termination checker that complements the verification of safety properties.
 
@@ -102,77 +103,6 @@ TODO: Image
 - Lowering
 - Inox
 - SMT solver
-
-# Tutorial: Insertion sort
-
-```scala
-def isSorted(l: List[BigInt]) : Boolean = l match {
-  case Nil              => true
-  case _ :: Nil         => true
-  case x1 :: x2 :: rest =>
-    x1 < x2 && isSorted(x2 :: rest)
-}
-```
-
----
-
-```scala
-def sInsert(x: BigInt, l: List[BigInt]) : List[BigInt] = {
-  l match {
-    case Nil => x :: Nil
-    case e :: rest if (x == e) => l
-    case e :: rest if (x < e)  => x :: e ::rest
-    case e :: rest if (x > e)  => e :: sInsert(x, rest)
-  }
-}
-```
-
----
-
-```scala
-def sInsert(x: BigInt, l: List[BigInt]) : List[BigInt] = {
-  require(isSorted(l))
-  // same as before
-} ensuring { res =>
-  isSorted(res) &&
-  res.size == l.size + 1 &&
-  res.content == l.content ++ Set(x)
-}
-```
-
----
-
-```scala
-def sort(l: List[BigInt]): List[BigInt] = l match {
-  case Nil     => Nil
-  case x :: xs => sInsert(x, sort(xs))
-} ensuring { res =>
-  isSorted(res) &&
-  res.size == l.size &&
-  res.content == l.content
-}
-```
-
----
-
-```
-  ┌───────────────────┐
-╔═╡ stainless summary ╞═══════════════════════════════════╗
-║ └───────────────────┘                                   ║
-║ sInsert   postcondition   valid   nativez3   0.081      ║
-║ sort      postcondition   valid   nativez3   0.931      ║
-║ sort      precondition    valid   nativez3   0.429      ║
-╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
-║ total: 3  valid: 3  invalid: 0  unknown: 0  time: 1.441 ║
-╚═════════════════════════════════════════════════════════╝
-```
-
----
-
-# Comparison
-
-- **Stainless:** 27 LOC
-- **Coq:** 140 LOC
 
 # Case study: Verifying typeclasses
 
@@ -307,33 +237,19 @@ Very useful for efficient data-parellel operations!
 
 Fully verified implementation of the previous running example, using a Conc-Rope under the hood instead of Scala's `par' operator.
 
-Built by Lucien Iseli, BSc student, as a semester project.
+Built by Lucien Iseli, BSc student, as a semester project. TODO: Benchmarks
 
 ---
 
 # Actor systems
 
 ```scala
-case class Primary(backup: ActorRef, counter: Counter) extends Behavior {
-  require(backup.name == "backup")
+case class Primary(backup: ActorRef, counter: BigInt) extends Behavior {
+  def processMsg(msg: Msg): Behavior = msg match {
+    case Inc =>
+      backup ! Inc
+      PrimBehav(backup, counter + 1)
 
-  def processMsg(msg: Msg)(implicit ctx: ActorContext): Behavior =
-    msg match {
-      case Inc =>
-        backup ! Inc
-        PrimBehav(backup, counter.increment)
-
-      case _ => this
-    }
-}
-```
-
----
-
-```scala
-case class Backup(counter: Counter) extends Behavior {
-  def processMsg(msg: Msg)(implicit ctx: ActorContext): Behavior = msg match {
-    case Inc => BackBehav(counter.increment)
     case _ => this
   }
 }
@@ -342,13 +258,24 @@ case class Backup(counter: Counter) extends Behavior {
 ---
 
 ```scala
-def invariant(s: ActorSystem): Boolean =
-  (s.behaviors(PrimaryRef), s.behaviors(BackupRef)) match {
-    case (Primary(bRef, p), Backup(b)) if bRef == BackupRef =>
-      val pending = s.inboxes(PrimaryRef -> BackupRef).length
-      p.value == b.value + pending
-    case _ => false
+case class Backup(counter: BigInt) extends Behavior {
+  def processMsg(msg: Msg): Behavior = msg match {
+    case Inc => BackBehav(counter + 1)
+    case _   => this
   }
+}
+```
+
+---
+
+```scala
+def invariant(s: ActorSystem): Boolean =
+  val primary = s.behaviors(PrimaryRef)
+  val backup  = s.behaviors(BackupRef)
+  val pending = s.inboxes(PrimaryRef -> BackupRef).length
+
+  primary.counter == backup.counter + pending
+}
 ```
 
 ---
@@ -356,7 +283,9 @@ def invariant(s: ActorSystem): Boolean =
 ```scala
 def preserveInv(s: ActorSystem, n: ActorRef, m: ActorRef) = {
   require(invariant(s))
+
   val next = s.step(n, m)
+
   invariant(next)
 }.holds
 ```
@@ -371,7 +300,7 @@ We also maintain a fork of Stainless, called *Smart* which supports:
 - Specifying and proving properties of such programs, including precise reasoning about the `Uint256` data type
 - Generating Solidity source code from Scala, which can then be compiled and deployed using the usual tools for the Ethereum software ecosystem
 
-For example, we have modeled and verified a voting smart contract developed by SwissBorg.
+<!-- For example, we have modeled and verified a voting smart contract developed by SwissBorg. -->
 
 [0] https://github.com/epfl-lara/smart
 
@@ -427,19 +356,14 @@ assert(extractor(entry) == 42) // VALID
 - VC generator via bidirectional typechecker for *System FR* (TODO: ref)
 - Indexed recursive types
 - Higher-kinded types
-- Better support for GADTs
-- WebAssembly backend
 - Better metals/IDE integration
 
 # Further work
 
-- Port synthesis and resource analysis frameworks over from Leon predecessor
-- Reasoning about I/O and concurrency (via ZIO?)
-- Support for exceptions
 - Scala 2.13 / latest Dotty / TASTY support
 - Standalone front-end for a custom input language
-- Eta / Frege front-end
-- GraalVM/Truffle back-end
+- WebAssembly backend
+- and more...
 
 # Learn more
 
@@ -456,10 +380,9 @@ assert(extractor(entry) == 42) // VALID
 
 # Acknowledgments
 
-Stainless is the latest iteration of our verification system for Scala, which was built and improved over time by many EPFL PhD students: Nicolas Voirol, Régis Blanc, Eva Darulova, Etienne Kneuss, Ravichandhran Kandhadai Madhavan, Mikaël Mayer, Emmanouil Koukoutos, Ruzica Piskac, Philippe Suter, as well as Marco Antognini, Ivan Kuraj, Lars Hupel, Samuel Grütter, and myself.
+Stainless is the latest iteration of our verification system for Scala, which was built and improved over time by many EPFL PhD students: Nicolas Voirol, Jad Hamza, Régis Blanc, Eva Darulova, Etienne Kneuss, Ravichandhran Kandhadai Madhavan, Mikaël Mayer, Emmanouil Koukoutos, Ruzica Piskac, Philippe Suter, as well as Marco Antognini, Ivan Kuraj, Lars Hupel, Samuel Grütter, and myself.
 
 Many thanks as well to our friends at TripleQuote for their help with the compiler and sbt plugins.
 
 # References {.allowframebreaks}
 
-TODO

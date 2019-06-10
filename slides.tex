@@ -94,11 +94,14 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-\institute{LARA, EPFL}
+\institute{Laboratory for Automated Reasoning and Analysis, EPFL}
 \useinnertheme{rectangles}
 \useoutertheme{infolines}
 \definecolor{darkred}{rgb}{0.8,0,0}
 \usecolortheme[named=darkred]{structure}
+\setbeamertemplate{footline}{frame number}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{}
 \usepackage[]{biblatex}
 \addbibresource{slides.bib}
 
@@ -186,7 +189,7 @@ in a subset of Scala, named \emph{PureScala}:
   more\ldots{}
 \end{itemize}
 
-Currently supports Scala 2.12.x, 2.13 coming up!
+Currently supports Scala 2.12.x.
 
 \end{frame}
 
@@ -260,9 +263,9 @@ Moreover, Stainless also checks \emph{PureScala} programs from:
 \item
   Creating null values or unininitalized local variables or fields
 \item
-  Cxplicitly throwing an exception
+  Explicitly throwing an exception
 \item
-  Cverflows and underflows on sized integer types
+  Overflows and underflows on sized integer types
 \end{itemize}
 
 \end{frame}
@@ -272,9 +275,6 @@ Moreover, Stainless also checks \emph{PureScala} programs from:
 
 A \emph{verified} function in stainless is guaranteed to never crash,
 however, it can still lead to an infinite evaluation.
-
-Curry-Howard correspondance tells us that non-terminating functions
-allows us to prove any proposition.
 
 Stainless therefore provides a termination checker that complements the
 verification of safety properties.
@@ -298,102 +298,6 @@ TODO: Image
   Inox
 \item
   SMT solver
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}[fragile]{Tutorial: Insertion sort}
-\protect\hypertarget{tutorial-insertion-sort}{}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{def} \FunctionTok{isSorted}\NormalTok{(l: List[BigInt]) : Boolean = l }\KeywordTok{match}\NormalTok{ \{}
-  \KeywordTok{case}\NormalTok{ Nil              => }\KeywordTok{true}
-  \KeywordTok{case}\NormalTok{ _ :: Nil         => }\KeywordTok{true}
-  \KeywordTok{case}\NormalTok{ x1 :: x2 :: rest =>}
-\NormalTok{    x1 < x2 && }\FunctionTok{isSorted}\NormalTok{(x2 :: rest)}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\end{frame}
-
-\begin{frame}[fragile]
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{def} \FunctionTok{sInsert}\NormalTok{(x: BigInt, l: List[BigInt]) : List[BigInt] = \{}
-\NormalTok{  l }\KeywordTok{match}\NormalTok{ \{}
-    \KeywordTok{case}\NormalTok{ Nil => x :: Nil}
-    \KeywordTok{case}\NormalTok{ e :: rest }\KeywordTok{if}\NormalTok{ (x == e) => l}
-    \KeywordTok{case}\NormalTok{ e :: rest }\KeywordTok{if}\NormalTok{ (x < e)  => x :: e ::rest}
-    \KeywordTok{case}\NormalTok{ e :: rest }\KeywordTok{if}\NormalTok{ (x > e)  => e :: }\FunctionTok{sInsert}\NormalTok{(x, rest)}
-\NormalTok{  \}}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\end{frame}
-
-\begin{frame}[fragile]
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{def} \FunctionTok{sInsert}\NormalTok{(x: BigInt, l: List[BigInt]) : List[BigInt] = \{}
-  \FunctionTok{require}\NormalTok{(}\FunctionTok{isSorted}\NormalTok{(l))}
-  \CommentTok{// same as before}
-\NormalTok{\} ensuring \{ res =>}
-  \FunctionTok{isSorted}\NormalTok{(res) &&}
-\NormalTok{  res.}\FunctionTok{size}\NormalTok{ == l.}\FunctionTok{size}\NormalTok{ + }\DecValTok{1}\NormalTok{ &&}
-\NormalTok{  res.}\FunctionTok{content}\NormalTok{ == l.}\FunctionTok{content}\NormalTok{ ++ Set(x)}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\end{frame}
-
-\begin{frame}[fragile]
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{def} \FunctionTok{sort}\NormalTok{(l: List[BigInt]): List[BigInt] = l }\KeywordTok{match}\NormalTok{ \{}
-  \KeywordTok{case}\NormalTok{ Nil     => Nil}
-  \KeywordTok{case}\NormalTok{ x :: xs => }\FunctionTok{sInsert}\NormalTok{(x, }\FunctionTok{sort}\NormalTok{(xs))}
-\NormalTok{\} ensuring \{ res =>}
-  \FunctionTok{isSorted}\NormalTok{(res) &&}
-\NormalTok{  res.}\FunctionTok{size}\NormalTok{ == l.}\FunctionTok{size}\NormalTok{ &&}
-\NormalTok{  res.}\FunctionTok{content}\NormalTok{ == l.}\FunctionTok{content}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\end{frame}
-
-\begin{frame}[fragile]
-
-\begin{verbatim}
-  ┌───────────────────┐
-╔═╡ stainless summary ╞═══════════════════════════════════╗
-║ └───────────────────┘                                   ║
-║ sInsert   postcondition   valid   nativez3   0.081      ║
-║ sort      postcondition   valid   nativez3   0.931      ║
-║ sort      precondition    valid   nativez3   0.429      ║
-╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
-║ total: 3  valid: 3  invalid: 0  unknown: 0  time: 1.441 ║
-╚═════════════════════════════════════════════════════════╝
-\end{verbatim}
-
-\end{frame}
-
-\begin{frame}{Comparison}
-\protect\hypertarget{comparison}{}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Stainless:} 27 LOC
-\item
-  \textbf{Coq:} 140 LOC
 \end{itemize}
 
 \end{frame}
@@ -578,7 +482,8 @@ Very useful for efficient data-parellel operations!
 Fully verified implementation of the previous running example, using a
 Conc-Rope under the hood instead of Scala's `par' operator.
 
-Built by Lucien Iseli, BSc student, as a semester project.
+Built by Lucien Iseli, BSc student, as a semester project. TODO:
+Benchmarks
 
 \end{frame}
 
@@ -587,30 +492,12 @@ Built by Lucien Iseli, BSc student, as a semester project.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{case} \KeywordTok{class} \FunctionTok{Primary}\NormalTok{(backup: ActorRef, counter: Counter) }\KeywordTok{extends}\NormalTok{ Behavior \{}
-  \FunctionTok{require}\NormalTok{(backup.}\FunctionTok{name}\NormalTok{ == }\StringTok{"backup"}\NormalTok{)}
+\KeywordTok{case} \KeywordTok{class} \FunctionTok{Primary}\NormalTok{(backup: ActorRef, counter: BigInt) }\KeywordTok{extends}\NormalTok{ Behavior \{}
+  \KeywordTok{def} \FunctionTok{processMsg}\NormalTok{(msg: Msg): Behavior = msg }\KeywordTok{match}\NormalTok{ \{}
+    \KeywordTok{case}\NormalTok{ Inc =>}
+\NormalTok{      backup ! Inc}
+      \FunctionTok{PrimBehav}\NormalTok{(backup, counter + }\DecValTok{1}\NormalTok{)}
 
-  \KeywordTok{def} \FunctionTok{processMsg}\NormalTok{(msg: Msg)(}\KeywordTok{implicit}\NormalTok{ ctx: ActorContext): Behavior =}
-\NormalTok{    msg }\KeywordTok{match}\NormalTok{ \{}
-      \KeywordTok{case}\NormalTok{ Inc =>}
-\NormalTok{        backup ! Inc}
-        \FunctionTok{PrimBehav}\NormalTok{(backup, counter.}\FunctionTok{increment}\NormalTok{)}
-
-      \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{this}
-\NormalTok{    \}}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\end{frame}
-
-\begin{frame}[fragile]
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{case} \KeywordTok{class} \FunctionTok{Backup}\NormalTok{(counter: Counter) }\KeywordTok{extends}\NormalTok{ Behavior \{}
-  \KeywordTok{def} \FunctionTok{processMsg}\NormalTok{(msg: Msg)(}\KeywordTok{implicit}\NormalTok{ ctx: ActorContext): Behavior = msg }\KeywordTok{match}\NormalTok{ \{}
-    \KeywordTok{case}\NormalTok{ Inc => }\FunctionTok{BackBehav}\NormalTok{(counter.}\FunctionTok{increment}\NormalTok{)}
     \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{this}
 \NormalTok{  \}}
 \NormalTok{\}}
@@ -623,13 +510,28 @@ Built by Lucien Iseli, BSc student, as a semester project.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{def} \FunctionTok{invariant}\NormalTok{(s: ActorSystem): Boolean =}
-\NormalTok{  (s.}\FunctionTok{behaviors}\NormalTok{(PrimaryRef), s.}\FunctionTok{behaviors}\NormalTok{(BackupRef)) }\KeywordTok{match}\NormalTok{ \{}
-    \KeywordTok{case}\NormalTok{ (}\FunctionTok{Primary}\NormalTok{(bRef, p), }\FunctionTok{Backup}\NormalTok{(b)) }\KeywordTok{if}\NormalTok{ bRef == BackupRef =>}
-      \KeywordTok{val}\NormalTok{ pending = s.}\FunctionTok{inboxes}\NormalTok{(PrimaryRef -> BackupRef).}\FunctionTok{length}
-\NormalTok{      p.}\FunctionTok{value}\NormalTok{ == b.}\FunctionTok{value}\NormalTok{ + pending}
-    \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{false}
+\KeywordTok{case} \KeywordTok{class} \FunctionTok{Backup}\NormalTok{(counter: BigInt) }\KeywordTok{extends}\NormalTok{ Behavior \{}
+  \KeywordTok{def} \FunctionTok{processMsg}\NormalTok{(msg: Msg): Behavior = msg }\KeywordTok{match}\NormalTok{ \{}
+    \KeywordTok{case}\NormalTok{ Inc => }\FunctionTok{BackBehav}\NormalTok{(counter + }\DecValTok{1}\NormalTok{)}
+    \KeywordTok{case}\NormalTok{ _   => }\KeywordTok{this}
 \NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def} \FunctionTok{invariant}\NormalTok{(s: ActorSystem): Boolean =}
+  \KeywordTok{val}\NormalTok{ primary = s.}\FunctionTok{behaviors}\NormalTok{(PrimaryRef)}
+  \KeywordTok{val}\NormalTok{ backup  = s.}\FunctionTok{behaviors}\NormalTok{(BackupRef)}
+  \KeywordTok{val}\NormalTok{ pending = s.}\FunctionTok{inboxes}\NormalTok{(PrimaryRef -> BackupRef).}\FunctionTok{length}
+
+\NormalTok{  primary.}\FunctionTok{counter}\NormalTok{ == backup.}\FunctionTok{counter}\NormalTok{ + pending}
+\NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
@@ -641,6 +543,7 @@ Built by Lucien Iseli, BSc student, as a semester project.
 \begin{Highlighting}[]
 \KeywordTok{def} \FunctionTok{preserveInv}\NormalTok{(s: ActorSystem, n: ActorRef, m: ActorRef) = \{}
   \FunctionTok{require}\NormalTok{(}\FunctionTok{invariant}\NormalTok{(s))}
+
   \KeywordTok{val}\NormalTok{ next = s.}\FunctionTok{step}\NormalTok{(n, m)}
   \FunctionTok{invariant}\NormalTok{(next)}
 \NormalTok{\}.}\FunctionTok{holds}
@@ -666,9 +569,6 @@ supports:
   Generating Solidity source code from Scala, which can then be compiled
   and deployed using the usual tools for the Ethereum software ecosystem
 \end{itemize}
-
-For example, we have modeled and verified a voting smart contract
-developed by SwissBorg.
 
 {[}0{]} https://github.com/epfl-lara/smart
 
@@ -761,10 +661,6 @@ developed by SwissBorg.
 \item
   Higher-kinded types
 \item
-  Better support for GADTs
-\item
-  WebAssembly backend
-\item
   Better metals/IDE integration
 \end{itemize}
 
@@ -776,20 +672,13 @@ developed by SwissBorg.
 \begin{itemize}
 \tightlist
 \item
-  Port synthesis and resource analysis frameworks over from Leon
-  predecessor
-\item
-  Reasoning about I/O and concurrency (via ZIO?)
-\item
-  Support for exceptions
-\item
   Scala 2.13 / latest Dotty / TASTY support
 \item
   Standalone front-end for a custom input language
 \item
-  Eta / Frege front-end
+  WebAssembly backend
 \item
-  GraalVM/Truffle back-end
+  and more\ldots{}
 \end{itemize}
 
 \end{frame}

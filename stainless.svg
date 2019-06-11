@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="717px" height="553px" viewBox="0 0 717 553" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.1 (78136) - https://sketchapp.com -->
+    <title>stainless</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="134.390024%" id="linearGradient-1">
+            <stop stop-color="#994BFF" offset="0%"></stop>
+            <stop stop-color="#FDD1FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="134.390024%" id="linearGradient-2">
+            <stop stop-color="#994BFF" offset="0%"></stop>
+            <stop stop-color="#FDD1FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#BE4A4A" offset="0%"></stop>
+            <stop stop-color="#FD9898" offset="100%"></stop>
+            <stop stop-color="#D8D8D8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0.327280405%" x2="50%" y2="100%" id="linearGradient-4">
+            <stop stop-color="#88BCFF" offset="0%"></stop>
+            <stop stop-color="#B1DBFF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0.560748959%" x2="50%" y2="129.020744%" id="linearGradient-5">
+            <stop stop-color="#FFA52A" offset="0.0633445946%"></stop>
+            <stop stop-color="#E1C97C" offset="100%"></stop>
+            <stop stop-color="#DCCE88" offset="100%"></stop>
+            <stop stop-color="#D8D8D8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0.316321973%" x2="50%" y2="129.020744%" id="linearGradient-6">
+            <stop stop-color="#FFA52A" offset="0.0633445946%"></stop>
+            <stop stop-color="#E1C97C" offset="100%"></stop>
+            <stop stop-color="#DCCE88" offset="100%"></stop>
+            <stop stop-color="#D8D8D8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-78.6842296%" x2="50%" y2="100%" id="linearGradient-7">
+            <stop stop-color="#46723F" offset="0%"></stop>
+            <stop stop-color="#AEFCD3" offset="98.7146326%"></stop>
+            <stop stop-color="#009761" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-78.6842296%" x2="50%" y2="100%" id="linearGradient-8">
+            <stop stop-color="#46723F" offset="0%"></stop>
+            <stop stop-color="#AEFCD3" offset="98.7146326%"></stop>
+            <stop stop-color="#009761" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="SMT" transform="translate(0.000000, 485.000000)">
+            <g id="Z3">
+                <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-1)" x="0.5" y="0.5" width="229" height="66"></rect>
+                <text font-family="OpenSans-Semibold, Open Sans" font-size="41" font-weight="500" fill="#424242">
+                    <tspan x="91.5070801" y="45">Z3</tspan>
+                </text>
+            </g>
+            <g id="CVC4" transform="translate(244.000000, 0.000000)">
+                <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-2)" x="0.5" y="0.5" width="228" height="66"></rect>
+                <text font-family="OpenSans-Semibold, Open Sans" font-size="41" font-weight="500" fill="#424242">
+                    <tspan x="64.060791" y="45">CVC4</tspan>
+                </text>
+            </g>
+            <g id="Princess" transform="translate(487.000000, 0.000000)">
+                <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-1)" x="0.5" y="0.5" width="229" height="66"></rect>
+                <text font-family="OpenSans-Semibold, Open Sans" font-size="41" font-weight="500" fill="#424242">
+                    <tspan x="32.8999023" y="45">Princess</tspan>
+                </text>
+            </g>
+        </g>
+        <g id="Inox" transform="translate(0.000000, 407.000000)">
+            <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-3)" x="0.5" y="0.5" width="716" height="66"></rect>
+            <text font-family="OpenSans-Semibold, Open Sans" font-size="41" font-weight="500" fill="#424242">
+                <tspan x="315.417969" y="44">Inox</tspan>
+            </text>
+        </g>
+        <g id="Stainless">
+            <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-4)" x="0.5" y="0.5" width="716" height="394"></rect>
+            <text font-family="OpenSans-Semibold, Open Sans" font-size="40" font-weight="500" fill="#424242">
+                <tspan x="273.697266" y="58">Stainless</tspan>
+            </text>
+            <g id="scalac" transform="translate(20.000000, 87.000000)">
+                <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-5)" x="0.5" y="0.5" width="313" height="62.8983051"></rect>
+                <text font-family="OpenSans-Semibold, Open Sans" font-size="36" font-weight="500" fill="#424242">
+                    <tspan x="104.511719" y="38.1016949">scalac</tspan>
+                </text>
+            </g>
+            <g id="dotc" transform="translate(384.000000, 87.000000)">
+                <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-6)" x="0.5" y="0.5" width="313" height="62.8983051"></rect>
+                <text font-family="OpenSans-Semibold, Open Sans" font-size="36" font-weight="500" fill="#424242">
+                    <tspan x="118.802734" y="38.1016949">dotc</tspan>
+                </text>
+            </g>
+            <g id="Extraction" transform="translate(20.000000, 164.000000)">
+                <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-7)" x="0.5" y="0.5" width="677" height="62.8"></rect>
+                <text font-family="OpenSans-Semibold, Open Sans" font-size="36" font-weight="500" fill="#424242">
+                    <tspan x="250.335938" y="40.2">Extraction</tspan>
+                </text>
+            </g>
+            <g id="Lowering" transform="translate(20.000000, 242.000000)">
+                <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-8)" x="0.5" y="0.5" width="677" height="62.8983051"></rect>
+                <text font-family="OpenSans-Semibold, Open Sans" font-size="36" font-weight="500" fill="#424242">
+                    <tspan x="258.958008" y="39.1016949">Lowering</tspan>
+                </text>
+            </g>
+            <g id="VC-generation" transform="translate(20.000000, 318.000000)">
+                <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-8)" x="0.5" y="0.5" width="677" height="62.8983051"></rect>
+                <text id="VC-Generation" font-family="OpenSans-Semibold, Open Sans" font-size="36" font-weight="500" fill="#424242">
+                    <tspan x="213.764648" y="39.1016949">VC Generation</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

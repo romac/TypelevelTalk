@@ -96,13 +96,8 @@ Stainless therefore provides a termination checker that complements the verifica
 
 # Pipeline
 
-TODO: Image
+![](stainless.pdf){ height=85% }
 
-- Scala/Dotty compiler
-- Extraction
-- Lowering
-- Inox
-- SMT solver
 
 # Case study: Verifying typeclasses
 

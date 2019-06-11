@@ -66,7 +66,7 @@ Currently only supports Dotty 0.12.0, will try to catch up.
 
 # What Stainless verifies
 
-- **Assertions** which should hold at the place where they are stated, but are checked statically
+- **Assertions** which should hold at the place where they are stated, **checked statically**
 - **Postconditions** using `ensuring` function: assertions for return values of functions
 - **Preconditions** using `require` function: assertions on function parameters
 - **Loop invariants**: inductive assertions that hold in each loop iteration after the while condition check passes
@@ -82,7 +82,7 @@ Stainless also automatically performs **automatic checks for the absence of runt
 
 ---
 
-Moreover, Stainless also checks *PureScala* programs from:
+Moreover, Stainless also prevents *PureScala* programs from:
 
 - Creating null values or unininitalized local variables or fields
 - Explicitly throwing an exception
@@ -155,10 +155,28 @@ abstract class Monoid[A]
 case class Sum(get: BigInt)
 
 implicit def sumMonoid = new Monoid[Sum] {
-  def empty = 0
+  def empty = Sum(0)
   def combine(x: Sum, y: Sum) = Sum(x.get + y.get)
 }
 ```
+
+---
+
+```scala
+val A: (Object) => Boolean = (x: Object) => x is Sum
+val x: { x: Object | @unchecked A(x) } = Sum(x)
+val y: { x: Object | @unchecked A(x) } = Sum(y)
+val z: { x: Object | @unchecked A(x) } = Sum(z)
+
+val res: Boolean = {
+  combine(A, thiss, x, combine(A, thiss, y, z)) ==
+  combine(A, thiss, combine(A, thiss, x, y), z)
+}
+
+assume(res == law_assoc(thiss, x, y, z))
+
+res
+````
 
 ---
 
@@ -177,7 +195,7 @@ implicit def sumMonoid = new Monoid[Sum] {
 ---
 
 ```scala
-implicit def optionMonoid[A](implicit val S: Semigroup[A]) =
+implicit def optionMonoid[A](implicit S: Semigroup[A]) =
   new Monoid[Option[A]] {
     def empty: Option[A] = None()
 
@@ -200,8 +218,50 @@ implicit def optionMonoid[A](implicit val S: Semigroup[A]) =
     // ...
 
     override def law_assoc(@induct x: Option[A], y: Option[A], z: Option[A]) =
-      super.law_assoc(x, y, z)
+      super.law_assoc(x, y, z) because {
+        (x, y, z) match {
+          case (Some(xv), Some(yv), Some(zv)) =>
+            S.law_assoc(xv, yv, zv)
+
+          case _ => true
+        }
+      }
   }
+```
+
+---
+
+```scala
+val A: (Object) => Boolean = (x: Object) =>
+  x is Option && isOption[Object](x.value, A)
+
+val x: { x: Object | @unchecked A(x) } = Option(x)
+val y: { x: Object | @unchecked A(x) } = Option(y)
+val z: { x: Object | @unchecked A(x) } = Option(z)
+
+x is Some ==> {
+  (x, y, z) match {
+    case (Some(xv), Some(yv), Some(zv)) =>
+      law_assoc(A, thiss.S, xv, yv, zv)
+    case _ =>
+      true
+  } && {
+    val res: Boolean = {
+      combine(A, thiss, x, combine(A, thiss, y, z)) ==
+      combine(A, thiss, combine(A, thiss, x, y), z)
+    }
+    assume(res == law_assoc(thiss, x, y, z))
+    res
+  }
+}
+```
+
+---
+
+```scala
+x$569 is None$0 ==> {
+  // snip...
+}
 ```
 
 ---
@@ -345,23 +405,21 @@ case class IntEntry() extends Entry {
 assert(extractor(entry) == 42) // VALID
 ```
 
-# Other features
+# There is more!
 
 - sbt plugin + metals integration
-- Ghost context
+- Ghost context (think Dotty's erased terms but more general)
 - Partial evaluation
 
 # Coming soon(ish)
 
-- VC generator via bidirectional typechecker for *System FR* (TODO: ref)
-- Indexed recursive types
 - Higher-kinded types
-- Better metals/IDE integration
+- Better support for refinement types and type members
+- VC generation via type-checking
 
-# Further work
+# Coming later
 
-- Scala 2.13 / latest Dotty / TASTY support
-- Standalone front-end for a custom input language
+- Scala 2.13 / latest Dotty support
 - WebAssembly backend
 - and more...
 

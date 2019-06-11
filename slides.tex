@@ -220,7 +220,7 @@ Currently only supports Dotty 0.12.0, will try to catch up.
 \tightlist
 \item
   \textbf{Assertions} which should hold at the place where they are
-  stated, but are checked statically
+  stated, \textbf{checked statically}
 \item
   \textbf{Postconditions} using \texttt{ensuring} function: assertions
   for return values of functions
@@ -256,7 +256,7 @@ absence of runtime failures}:
 
 \begin{frame}
 
-Moreover, Stainless also checks \emph{PureScala} programs from:
+Moreover, Stainless also prevents \emph{PureScala} programs from:
 
 \begin{itemize}
 \tightlist
@@ -371,9 +371,31 @@ TODO: Image
 \KeywordTok{case} \KeywordTok{class} \FunctionTok{Sum}\NormalTok{(get: BigInt)}
 
 \KeywordTok{implicit} \KeywordTok{def}\NormalTok{ sumMonoid = }\KeywordTok{new}\NormalTok{ Monoid[Sum] \{}
-  \KeywordTok{def}\NormalTok{ empty = }\DecValTok{0}
+  \KeywordTok{def}\NormalTok{ empty = }\FunctionTok{Sum}\NormalTok{(}\DecValTok{0}\NormalTok{)}
   \KeywordTok{def} \FunctionTok{combine}\NormalTok{(x: Sum, y: Sum) = }\FunctionTok{Sum}\NormalTok{(x.}\FunctionTok{get}\NormalTok{ + y.}\FunctionTok{get}\NormalTok{)}
 \NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{val}\NormalTok{ A: (Object) => Boolean = (x: Object) => x is Sum}
+\KeywordTok{val}\NormalTok{ x: \{ x: Object | @unchecked }\FunctionTok{A}\NormalTok{(x) \} = }\FunctionTok{Sum}\NormalTok{(x)}
+\KeywordTok{val}\NormalTok{ y: \{ x: Object | @unchecked }\FunctionTok{A}\NormalTok{(x) \} = }\FunctionTok{Sum}\NormalTok{(y)}
+\KeywordTok{val}\NormalTok{ z: \{ x: Object | @unchecked }\FunctionTok{A}\NormalTok{(x) \} = }\FunctionTok{Sum}\NormalTok{(z)}
+
+\KeywordTok{val}\NormalTok{ res: Boolean = \{}
+  \FunctionTok{combine}\NormalTok{(A, thiss, x, }\FunctionTok{combine}\NormalTok{(A, thiss, y, z)) ==}
+  \FunctionTok{combine}\NormalTok{(A, thiss, }\FunctionTok{combine}\NormalTok{(A, thiss, x, y), z)}
+\NormalTok{\}}
+
+\FunctionTok{assume}\NormalTok{(res == }\FunctionTok{law_assoc}\NormalTok{(thiss, x, y, z))}
+
+\NormalTok{res}
 \end{Highlighting}
 \end{Shaded}
 
@@ -399,7 +421,7 @@ TODO: Image
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{implicit} \KeywordTok{def}\NormalTok{ optionMonoid[A](}\KeywordTok{implicit} \KeywordTok{val}\NormalTok{ S: Semigroup[A]) =}
+\KeywordTok{implicit} \KeywordTok{def}\NormalTok{ optionMonoid[A](}\KeywordTok{implicit}\NormalTok{ S: Semigroup[A]) =}
   \KeywordTok{new}\NormalTok{ Monoid[Option[A]] \{}
     \KeywordTok{def}\NormalTok{ empty: Option[A] = None()}
 
@@ -426,8 +448,58 @@ TODO: Image
     \CommentTok{// ...}
 
     \KeywordTok{override} \KeywordTok{def} \FunctionTok{law_assoc}\NormalTok{(@induct x: Option[A], y: Option[A], z: Option[A]) =}
-      \KeywordTok{super}\NormalTok{.}\FunctionTok{law_assoc}\NormalTok{(x, y, z)}
+      \KeywordTok{super}\NormalTok{.}\FunctionTok{law_assoc}\NormalTok{(x, y, z) because \{}
+\NormalTok{        (x, y, z) }\KeywordTok{match}\NormalTok{ \{}
+          \KeywordTok{case}\NormalTok{ (Some(xv), Some(yv), Some(zv)) =>}
+\NormalTok{            S.}\FunctionTok{law_assoc}\NormalTok{(xv, yv, zv)}
+
+          \KeywordTok{case}\NormalTok{ _ => }\KeywordTok{true}
+\NormalTok{        \}}
+\NormalTok{      \}}
 \NormalTok{  \}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{val}\NormalTok{ A: (Object) => Boolean = (x: Object) =>}
+\NormalTok{  x is Option && isOption[Object](x.}\FunctionTok{value}\NormalTok{, A)}
+
+\KeywordTok{val}\NormalTok{ x: \{ x: Object | @unchecked }\FunctionTok{A}\NormalTok{(x) \} = Option(x)}
+\KeywordTok{val}\NormalTok{ y: \{ x: Object | @unchecked }\FunctionTok{A}\NormalTok{(x) \} = Option(y)}
+\KeywordTok{val}\NormalTok{ z: \{ x: Object | @unchecked }\FunctionTok{A}\NormalTok{(x) \} = Option(z)}
+
+\NormalTok{x is Some ==> \{}
+\NormalTok{  (x, y, z) }\KeywordTok{match}\NormalTok{ \{}
+    \KeywordTok{case}\NormalTok{ (Some(xv), Some(yv), Some(zv)) =>}
+      \FunctionTok{law_assoc}\NormalTok{(A, thiss.}\FunctionTok{S}\NormalTok{, xv, yv, zv)}
+    \KeywordTok{case}\NormalTok{ _ =>}
+      \KeywordTok{true}
+\NormalTok{  \} && \{}
+    \KeywordTok{val}\NormalTok{ res: Boolean = \{}
+      \FunctionTok{combine}\NormalTok{(A, thiss, x, }\FunctionTok{combine}\NormalTok{(A, thiss, y, z)) ==}
+      \FunctionTok{combine}\NormalTok{(A, thiss, }\FunctionTok{combine}\NormalTok{(A, thiss, x, y), z)}
+\NormalTok{    \}}
+    \FunctionTok{assume}\NormalTok{(res == }\FunctionTok{law_assoc}\NormalTok{(thiss, x, y, z))}
+\NormalTok{    res}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x$}\DecValTok{569}\NormalTok{ is None$}\DecValTok{0}\NormalTok{ ==> \{}
+  \CommentTok{// snip...}
+\NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
@@ -545,6 +617,7 @@ Benchmarks
   \FunctionTok{require}\NormalTok{(}\FunctionTok{invariant}\NormalTok{(s))}
 
   \KeywordTok{val}\NormalTok{ next = s.}\FunctionTok{step}\NormalTok{(n, m)}
+
   \FunctionTok{invariant}\NormalTok{(next)}
 \NormalTok{\}.}\FunctionTok{holds}
 \end{Highlighting}
@@ -633,15 +706,15 @@ supports:
 
 \end{frame}
 
-\begin{frame}{Other features}
-\protect\hypertarget{other-features}{}
+\begin{frame}{There is more!}
+\protect\hypertarget{there-is-more}{}
 
 \begin{itemize}
 \tightlist
 \item
   sbt plugin + metals integration
 \item
-  Ghost context
+  Ghost context (think Dotty's erased terms but more general)
 \item
   Partial evaluation
 \end{itemize}
@@ -654,27 +727,22 @@ supports:
 \begin{itemize}
 \tightlist
 \item
-  VC generator via bidirectional typechecker for \emph{System FR} (TODO:
-  ref)
-\item
-  Indexed recursive types
-\item
   Higher-kinded types
 \item
-  Better metals/IDE integration
+  Better support for refinement types and type members
+\item
+  VC generation via type-checking
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}{Further work}
-\protect\hypertarget{further-work}{}
+\begin{frame}{Coming later}
+\protect\hypertarget{coming-later}{}
 
 \begin{itemize}
 \tightlist
 \item
-  Scala 2.13 / latest Dotty / TASTY support
-\item
-  Standalone front-end for a custom input language
+  Scala 2.13 / latest Dotty support
 \item
   WebAssembly backend
 \item
@@ -715,20 +783,13 @@ supports:
 
 Stainless is the latest iteration of our verification system for Scala,
 which was built and improved over time by many EPFL PhD students:
-Nicolas Voirol, Régis Blanc, Eva Darulova, Etienne Kneuss, Ravichandhran
-Kandhadai Madhavan, Mikaël Mayer, Emmanouil Koukoutos, Ruzica Piskac,
-Philippe Suter, as well as Marco Antognini, Ivan Kuraj, Lars Hupel,
-Samuel Grütter, and myself.
+Nicolas Voirol, Jad Hamza, Régis Blanc, Eva Darulova, Etienne Kneuss,
+Ravichandhran Kandhadai Madhavan, Mikaël Mayer, Emmanouil Koukoutos,
+Ruzica Piskac, Philippe Suter, as well as Marco Antognini, Ivan Kuraj,
+Lars Hupel, Samuel Grütter, and myself.
 
 Many thanks as well to our friends at TripleQuote for their help with
 the compiler and sbt plugins.
-
-\end{frame}
-
-\begin{frame}[allowframebreaks]{References}
-\protect\hypertarget{references}{}
-
-TODO
 
 \end{frame}
 
